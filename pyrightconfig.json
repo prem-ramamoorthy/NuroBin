@@ -1,0 +1,14 @@
+{
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/__pycache__"
+  ],
+  "stubPath": "typing",
+  "executionEnvironments": [
+    {
+      "root": "."
+    }
+  ]
+}
