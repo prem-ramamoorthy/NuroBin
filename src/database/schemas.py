@@ -20,10 +20,10 @@ class UserRead(SQLModel):
 
 
 class UserUpdate(SQLModel):
-    username: str | None
-    email: str | None
-    password: str | None
-    role: UserRole | None
+    username: str | None = None
+    email: str | None = None
+    password: str | None = None
+    role: UserRole | None = None
 
 
 class PatientCreate(SQLModel):
