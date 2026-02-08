@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordBearer
+from pydantic import BaseModel
 from sqlmodel.orm.session import Session
 
 from src.database.create_tables import create_db_table, get_session
@@ -8,6 +9,7 @@ from src.database.crud import (
     create_caretaker,
     create_doctor,
     create_patient,
+    create_user,
     delete_caretaker,
     delete_doctor,
     delete_patient,
@@ -20,7 +22,9 @@ from src.database.crud import (
     update_caretaker,
     update_doctor,
     update_patient,
+    update_user,
 )
+from src.database.models import UserRole
 from src.database.schemas import (
     CareTakerCreate,
     CareTakerRead,
@@ -31,6 +35,7 @@ from src.database.schemas import (
     PatientCreate,
     PatientRead,
     PatientUpdate,
+    UserCreate,
 )
 
 
@@ -45,9 +50,54 @@ app = FastAPI(lifespan=lifespan)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+class RegisterPatient(BaseModel):
+    username: str
+    email: str
+    password: str
+    name: str
+    age: int
+    address: str
+    medical_history: str | None
+    phone: str
+
+
+class RegisterDoctor(BaseModel):
+    username: str
+    email: str
+    password: str
+    name: str
+    age: int
+    license_number: str
+    experience: int
+    degree: str
+    phone: str
+
+
+class RegisterCareTaker(BaseModel):
+    username: str
+    email: str
+    password: str
+    name: str
+    age: int
+    license_number: str
+    experience: int
+    salary: float
+    grade: str
+    phone: str
+
+
 @app.post("/patients/", response_model=PatientRead)
-async def add_patient(patient: PatientCreate, session: Session = Depends(get_session)):
-    return create_patient(session, patient)
+async def add_patient(
+    patient: RegisterPatient, session: Session = Depends(get_session)
+):
+    user_in = UserCreate.model_validate_json(patient.model_dump_json(), extra="ignore")
+    patient_in = PatientCreate.model_validate_json(
+        patient.model_dump_json(), extra="ignore"
+    )
+    user_in.sqlmodel_update({"role": UserRole.patient})
+    user = create_user(session, user_in)
+    patient_in.sqlmodel_update({"user_id": user.id})
+    return create_patient(session, patient_in)
 
 
 @app.get("/patients/{patient_id}", response_model=PatientRead)
@@ -73,8 +123,15 @@ async def remove_patient(patient_id, session: Session = Depends(get_session)):
 
 
 @app.post("/doctors/", response_model=DoctorRead)
-async def add_doctor(doctor: DoctorCreate, session: Session = Depends(get_session)):
-    return create_doctor(session, doctor)
+async def add_doctor(doctor: RegisterDoctor, session: Session = Depends(get_session)):
+    user_in = UserCreate.model_validate_json(doctor.model_dump_json(), extra="ignore")
+    doctor_in = DoctorCreate.model_validate_json(
+        doctor.model_dump_json(), extra="ignore"
+    )
+    user_in.sqlmodel_update({"role": UserRole.doctor})
+    user = create_user(session, user_in)
+    doctor_in.sqlmodel_update({"user_id": user.id})
+    return create_doctor(session, doctor_in)
 
 
 @app.get("/doctors/{doctor_id}", response_model=DoctorRead)
@@ -101,9 +158,18 @@ async def remove_doctor(doctor_id: int, session: Session = Depends(get_session))
 
 @app.post("/caretaker/", response_model=CareTakerRead)
 async def add_caretaker(
-    caretaker: CareTakerCreate, session: Session = Depends(get_session)
+    caretaker: RegisterCareTaker, session: Session = Depends(get_session)
 ):
-    return create_caretaker(session, caretaker)
+    user_in = UserCreate.model_validate_json(
+        caretaker.model_dump_json(), extra="ignore"
+    )
+    caretaker_in = CareTakerCreate.model_validate_json(
+        caretaker.model_dump_json(), extra="ignore"
+    )
+    user_in.sqlmodel_update({"role": UserRole.caretaker})
+    user = create_user(session, user_in)
+    caretaker_in.sqlmodel_update({"user_id": user.id})
+    return create_caretaker(session, caretaker_in)
 
 
 @app.get("/caretaker/{caretaker_id}", response_model=CareTakerRead)
