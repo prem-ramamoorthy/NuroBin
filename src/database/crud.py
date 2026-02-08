@@ -1,3 +1,4 @@
+from typing import Tuple
 from sqlmodel import Session, select
 from src.database.models import Patient, Doctor, CareTaker, User
 from src.database.schemas import (
@@ -26,9 +27,23 @@ def create_user(session: Session, user_in: UserCreate) -> UserRead:
     return UserRead.model_validate(user)
 
 
-def get_user(session: Session, user_id: int) -> UserRead | None:
+def get_user(session: Session, user_id: str) -> UserRead | None:
     user = session.get(User, user_id)
     return UserRead.model_validate(user) if user else None
+
+
+def get_user_username(session: Session, username: str) -> UserRead | None:
+    statement = select(User).where(User.username == username)
+    user = session.exec(statement).first()
+    return UserRead.model_validate(user) if user else None
+
+
+def get_user_auth(
+    session: Session, username: str
+) -> Tuple[str, str] | Tuple[None, None]:
+    statement = select(User).where(User.username == username)
+    user = session.exec(statement).first()
+    return (user.username, user.password) if user else (None, None)
 
 
 def get_users(session: Session) -> list[UserRead]:
@@ -46,6 +61,7 @@ def update_user(session: Session, user_id: int, user_in: UserUpdate) -> UserRead
     session.add(user)
     session.commit()
     session.refresh(user)
+    return UserRead.model_validate(user)
 
 
 def delete_user(session: Session, user_id: int) -> UserRead | None:
