@@ -209,3 +209,4 @@ __marimo__/
 
 .envrc
 .env
+test.db
