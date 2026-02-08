@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel, Session, create_engine
 
-from main import app, get_session  # adjust import if needed
+from src.main import app, get_session  # adjust import if needed
 
 
 TEST_DATABASE_URL = "sqlite:///./test.db"
@@ -14,6 +14,12 @@ engine = create_engine(
 
 
 def override_get_session():
+    with Session(engine) as session:
+        yield session
+
+
+@pytest.fixture
+def session():
     with Session(engine) as session:
         yield session
 
