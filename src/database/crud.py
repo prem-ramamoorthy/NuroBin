@@ -3,10 +3,13 @@ from src.database.models import Patient, Doctor, CareTaker
 from src.database.schemas import (
     PatientCreate,
     PatientRead,
+    PatientUpdate,
     DoctorCreate,
     DoctorRead,
+    DoctorUpdate,
     CareTakerCreate,
     CareTakerRead,
+    CareTakerUpdate,
 )
 
 
@@ -39,15 +42,14 @@ def get_patient(
 def update_patient(
     session: Session,
     patient_id: int,
-    patient_in: PatientCreate,
+    patient_in: PatientUpdate,
 ) -> PatientRead | None:
     patient = session.get(Patient, patient_id)
     if not patient:
         return None
 
-    update_data = patient_in.model_dump()
-    for key, value in update_data.items():
-        setattr(patient, key, value)
+    update_data = patient_in.model_dump(exclude_unset=True)
+    patient.sqlmodel_update(update_data)
 
     session.add(patient)
     session.commit()
@@ -85,10 +87,15 @@ def get_doctors(session: Session) -> list[DoctorRead]:
     return [DoctorRead.model_validate(d) for d in doctors]
 
 
+def get_doctor(doctor_id, session: Session) -> DoctorRead | None:
+    doctor = session.get(Doctor, doctor_id)
+    return DoctorRead.model_validate(doctor) if doctor else None
+
+
 def update_doctor(
     session: Session,
     doctor_id: int,
-    doctor_in: DoctorCreate,
+    doctor_in: DoctorUpdate,
 ) -> DoctorRead | None:
     doctor = session.get(Doctor, doctor_id)
     if not doctor:
@@ -125,6 +132,11 @@ def create_caretaker(
     return CareTakerRead.model_validate(caretaker)
 
 
+def get_caretaker(caretaker_id: int, session: Session) -> CareTakerRead | None:
+    caretaker = session.get(CareTaker, caretaker_id)
+    return CareTakerRead.model_validate(caretaker) if caretaker else None
+
+
 def get_caretakers(session: Session) -> list[CareTakerRead]:
     caretakers = session.exec(select(CareTaker)).all()
     return [CareTakerRead.model_validate(c) for c in caretakers]
@@ -133,7 +145,7 @@ def get_caretakers(session: Session) -> list[CareTakerRead]:
 def update_caretaker(
     session: Session,
     caretaker_id: int,
-    caretaker_in: CareTakerCreate,
+    caretaker_in: CareTakerUpdate,
 ) -> CareTakerRead | None:
     caretaker = session.get(CareTaker, caretaker_id)
     if not caretaker:
