@@ -1,5 +1,8 @@
 def test_create_caretaker(client):
     payload = {
+        "username": "caretaker1",
+        "email": "caretaker1@example.com",
+        "password": "caretakerpass",
         "name": "Caretaker One",
         "age": 35,
         "license_number": "CARE123",
@@ -18,8 +21,11 @@ def test_get_caretaker(client):
     create = client.post(
         "/caretaker/",
         json={
+            "username": "caretaker2",
+            "email": "caretaker2@example.com",
+            "password": "caretakerpass",
             "name": "Caretaker Two",
-            "age": None,
+            "age": 40,
             "license_number": "CARE456",
             "experience": 5,
             "salary": 30000.0,
@@ -45,6 +51,9 @@ def test_patch_caretaker(client):
     create = client.post(
         "/caretaker/",
         json={
+            "username": "caretakerpatch",
+            "email": "patch@example.com",
+            "password": "patchpass",
             "name": "Caretaker Patch",
             "age": 40,
             "license_number": "CARE789",
@@ -70,6 +79,9 @@ def test_delete_caretaker(client):
     create = client.post(
         "/caretaker/",
         json={
+            "username": "caretakerdelete",
+            "email": "delete@example.com",
+            "password": "deletepass",
             "name": "Caretaker Delete",
             "age": 50,
             "license_number": "CAREDEL",

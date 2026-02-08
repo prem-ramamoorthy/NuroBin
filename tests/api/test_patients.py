@@ -1,32 +1,39 @@
-def test_create_patient(client):
+def test_register_patient_success(client):
     payload = {
+        "username": "johndoe1",
+        "email": "john@example.com",
+        "password": "securepassword123",
         "name": "John Doe",
-        "age": 30,
+        "age": 35,
         "address": "123 Main St",
         "medical_history": "Diabetes",
         "phone": "1234567890",
-        "email": "john@example.com",
     }
 
     response = client.post("/patients/", json=payload)
+
     assert response.status_code == 200
 
     data = response.json()
-    assert data["id"] is not None
-    assert data["name"] == payload["name"]
-    assert data["age"] == payload["age"]
+
+    assert "id" in data
+    assert data["name"] == "John Doe"
+    assert data["age"] == 35
+    assert data["phone"] == "1234567890"
 
 
 def test_get_patient(client):
     create = client.post(
         "/patients/",
         json={
+            "username": "johndoe2",
+            "email": "john@example.com",
+            "password": "securepassword123",
             "name": "Jane Doe",
             "age": 40,
             "address": "456 Elm St",
             "medical_history": None,
             "phone": "9876543210",
-            "email": None,
         },
     )
 
@@ -47,12 +54,14 @@ def test_patch_patient(client):
     create = client.post(
         "/patients/",
         json={
+            "username": "johndoe3",
+            "email": "john@example.com",
+            "password": "securepassword123",
             "name": "Patch Me",
             "age": 50,
             "address": "Old Address",
             "medical_history": None,
             "phone": "1111111111",
-            "email": None,
         },
     )
 
@@ -71,12 +80,14 @@ def test_delete_patient(client):
     create = client.post(
         "/patients/",
         json={
+            "username": "johndoe4",
+            "email": "john@example.com",
+            "password": "securepassword123",
             "name": "Delete Me",
             "age": 60,
             "address": "Somewhere",
             "medical_history": None,
             "phone": "2222222222",
-            "email": None,
         },
     )
 

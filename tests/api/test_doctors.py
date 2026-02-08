@@ -1,12 +1,14 @@
 def test_create_doctor(client):
     payload = {
+        "username": "drsmith",
+        "email": "drsmith@example.com",
+        "password": "strongpassword",
         "name": "Dr Smith",
         "age": 45,
         "license_number": "LIC123",
         "experience": 20,
         "degree": "MD",
         "phone": "9999999999",
-        "email": "drsmith@example.com",
     }
 
     response = client.post("/doctors/", json=payload)
@@ -18,13 +20,15 @@ def test_get_doctor(client):
     create = client.post(
         "/doctors/",
         json={
+            "username": "drwho",
+            "email": "who@example.com",
+            "password": "tardis123",
             "name": "Dr Who",
-            "age": None,
+            "age": 100,
             "license_number": "WHO001",
             "experience": 100,
             "degree": "Time Lord",
             "phone": "1231231234",
-            "email": "who@example.com",
         },
     )
 
@@ -45,13 +49,15 @@ def test_patch_doctor(client):
     create = client.post(
         "/doctors/",
         json={
+            "username": "drpatch",
+            "email": "patch@example.com",
+            "password": "patchpass",
             "name": "Dr Patch",
             "age": 55,
             "license_number": "PATCH123",
             "experience": 25,
             "degree": "MBBS",
             "phone": "5555555555",
-            "email": "patch@example.com",
         },
     )
 
@@ -70,13 +76,15 @@ def test_delete_doctor(client):
     create = client.post(
         "/doctors/",
         json={
+            "username": "drdelete",
+            "email": "delete@example.com",
+            "password": "deletepass",
             "name": "Dr Delete",
             "age": 60,
             "license_number": "DEL123",
             "experience": 35,
             "degree": "MD",
             "phone": "6666666666",
-            "email": "delete@example.com",
         },
     )
 
