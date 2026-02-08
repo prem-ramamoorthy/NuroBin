@@ -101,8 +101,8 @@ def update_doctor(
     if not doctor:
         return None
 
-    for key, value in doctor_in.model_dump().items():
-        setattr(doctor, key, value)
+    update_data = doctor_in.model_dump(exclude_unset=True)
+    doctor.sqlmodel_update(update_data)
 
     session.add(doctor)
     session.commit()
@@ -151,8 +151,8 @@ def update_caretaker(
     if not caretaker:
         return None
 
-    for key, value in caretaker_in.model_dump().items():
-        setattr(caretaker, key, value)
+    update_data = caretaker_in.model_dump(exclude_unset=True)
+    caretaker.sqlmodel_update(update_data)
 
     session.add(caretaker)
     session.commit()
