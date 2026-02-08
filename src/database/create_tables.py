@@ -1,4 +1,6 @@
+from typing import Generator
 from sqlmodel import SQLModel, Session, create_engine
+from sqlmodel.orm.session import Session as engSession
 from src.database import models
 
 USERNAME = "postgres"
@@ -11,10 +13,15 @@ DATABASE_URL = f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:5432/{DATABASE}"
 engine = create_engine(DATABASE_URL, pool_recycle=3600, echo=True)
 
 
-def get_session():
+def get_session() -> Generator[engSession, None, None]:
     with Session(engine) as session:
         yield session
 
 
-if __name__ == "__main__":
+def create_db_table():
     SQLModel.metadata.create_all(engine)
+
+
+if __name__ == "__main__":
+    for val in get_session():
+        print(type(val))
