@@ -1,24 +1,23 @@
 def test_create_patient(client):
-    response = client.post(
-        "/patients/",
-        json={
-            "name": "John Doe",
-            "age": 30,
-            "address": "123 Main St",
-            "medical_history": "None",
-            "phone": "1234567890",
-            "email": "john@example.com",
-        },
-    )
+    payload = {
+        "name": "John Doe",
+        "age": 30,
+        "address": "123 Main St",
+        "medical_history": "Diabetes",
+        "phone": "1234567890",
+        "email": "john@example.com",
+    }
 
+    response = client.post("/patients/", json=payload)
     assert response.status_code == 200
+
     data = response.json()
-    assert data["name"] == "John Doe"
-    assert "id" in data
+    assert data["id"] is not None
+    assert data["name"] == payload["name"]
+    assert data["age"] == payload["age"]
 
 
 def test_get_patient(client):
-    # create first
     create = client.post(
         "/patients/",
         json={
@@ -26,15 +25,16 @@ def test_get_patient(client):
             "age": 40,
             "address": "456 Elm St",
             "medical_history": None,
-            "phone": "0987654321",
+            "phone": "9876543210",
             "email": None,
         },
     )
+
     patient_id = create.json()["id"]
 
     response = client.get(f"/patients/{patient_id}")
     assert response.status_code == 200
-    assert response.json()["id"] == patient_id
+    assert response.json()["name"] == "Jane Doe"
 
 
 def test_get_all_patients(client):
@@ -43,28 +43,28 @@ def test_get_all_patients(client):
     assert isinstance(response.json(), list)
 
 
-def test_update_patient(client):
+def test_patch_patient(client):
     create = client.post(
         "/patients/",
         json={
-            "name": "Mark",
-            "age": 25,
-            "address": "789 Oak St",
+            "name": "Patch Me",
+            "age": 50,
+            "address": "Old Address",
             "medical_history": None,
-            "phone": "1112223333",
+            "phone": "1111111111",
             "email": None,
         },
     )
+
     patient_id = create.json()["id"]
 
     response = client.patch(
         f"/patients/{patient_id}",
-        json={"age": 26},
+        json={"address": "New Address"},
     )
-    print(response)
 
     assert response.status_code == 200
-    assert response.json()["age"] == 26
+    assert response.json()["address"] == "New Address"
 
 
 def test_delete_patient(client):
@@ -72,14 +72,16 @@ def test_delete_patient(client):
         "/patients/",
         json={
             "name": "Delete Me",
-            "age": 50,
-            "address": "Nowhere",
+            "age": 60,
+            "address": "Somewhere",
             "medical_history": None,
-            "phone": "0000000000",
+            "phone": "2222222222",
             "email": None,
         },
     )
+
     patient_id = create.json()["id"]
 
     response = client.delete(f"/patients/{patient_id}")
     assert response.status_code == 200
+    assert response.json()["id"] == patient_id
