@@ -22,12 +22,12 @@ class PatientRead(SQLModel):
 
 
 class PatientUpdate(SQLModel):
-    name: str | None
-    age: int | None
-    address: str | None
-    medical_history: Optional[str]
-    phone: str | None
-    email: Optional[str]
+    name: str | None = None
+    age: int | None = None
+    address: str | None = None
+    medical_history: str | None = None
+    phone: str | None = None
+    email: str | None = None
 
 
 class DoctorCreate(SQLModel):
@@ -52,14 +52,14 @@ class DoctorRead(SQLModel):
 
 
 class DoctorUpdate(SQLModel):
-    id: int | None
-    name: str | None
+    id: int | None = None
+    name: str | None = None
     age: int | None = None
-    license_number: str | None
-    experience: int | None
-    degree: str | None
-    phone: str | None
-    email: str | None
+    license_number: str | None = None
+    experience: int | None = None
+    degree: str | None = None
+    phone: str | None = None
+    email: str | None = None
 
 
 class CareTakerCreate(SQLModel):
@@ -84,11 +84,11 @@ class CareTakerRead(SQLModel):
 
 
 class CareTakerUpdate(SQLModel):
-    id: int | None
-    name: str | None
+    id: int | None = None
+    name: str | None = None
     age: int | None = None
-    license_number: str | None
-    experience: int | None
-    salary: float | None
-    grade: str | None
-    phone: str | None
+    license_number: str | None = None
+    experience: int | None = None
+    salary: float | None = None
+    grade: str | None = None
+    phone: str | None = None
