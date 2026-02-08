@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from src.database.models import Patient, Doctor, CareTaker
+from src.database.models import Patient, Doctor, CareTaker, User
 from src.database.schemas import (
     PatientCreate,
     PatientRead,
@@ -10,7 +10,51 @@ from src.database.schemas import (
     CareTakerCreate,
     CareTakerRead,
     CareTakerUpdate,
+    UserCreate,
+    UserRead,
+    UserUpdate,
 )
+
+
+def create_user(session: Session, user_in: UserCreate) -> UserRead:
+    user = User.model_validate(user_in)
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    return UserRead.model_validate(user)
+
+
+def get_user(session: Session, user_id: int) -> UserRead | None:
+    user = session.get(User, user_id)
+    return UserRead.model_validate(user) if user else None
+
+
+def get_users(session: Session) -> list[UserRead]:
+    users = session.exec(select(User)).all()
+    return [UserRead.model_validate(u) for u in users]
+
+
+def update_user(session: Session, user_id: int, user_in: UserUpdate) -> UserRead | None:
+    user = session.get(User, user_id)
+    if not user:
+        return None
+
+    update_data = user_in.model_dump(exclude_unset=True)
+    user.sqlmodel_update(update_data)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+
+def delete_user(session: Session, user_id: int) -> UserRead | None:
+    user = session.get(User, user_id)
+    if not user:
+        return None
+    session.delete(user)
+    session.commit()
+    return UserRead.model_validate(user)
 
 
 def create_patient(
@@ -63,6 +107,8 @@ def delete_patient(
     patient_id: int,
 ) -> PatientRead | None:
     patient = session.get(Patient, patient_id)
+    if not patient:
+        return None
     val = PatientRead.model_validate(patient) if patient else None
     session.delete(patient)
     session.commit()
@@ -113,6 +159,8 @@ def update_doctor(
 
 def delete_doctor(session: Session, doctor_id: int) -> DoctorRead | None:
     doctor = session.get(Doctor, doctor_id)
+    if not doctor:
+        return None
     val = DoctorRead.model_validate(doctor) if doctor else None
     session.delete(doctor)
     session.commit()
@@ -163,6 +211,8 @@ def update_caretaker(
 
 def delete_caretaker(session: Session, caretaker_id: int) -> CareTakerRead | None:
     caretaker = session.get(CareTaker, caretaker_id)
+    if not caretaker:
+        return None
     val = CareTakerRead.model_validate(caretaker) if caretaker else None
     session.delete(caretaker)
     session.commit()

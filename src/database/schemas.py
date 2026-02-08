@@ -1,14 +1,38 @@
 from typing import Optional
 from sqlmodel import SQLModel
 
+from src.database.models import UserRole
+
+
+class UserCreate(SQLModel):
+    username: str
+    email: str
+    password: str
+    role: UserRole | None = None
+
+
+class UserRead(SQLModel):
+    id: int
+    username: str
+    email: str
+    role: UserRole
+    is_active: bool
+
+
+class UserUpdate(SQLModel):
+    username: str | None
+    email: str | None
+    password: str | None
+    role: UserRole | None
+
 
 class PatientCreate(SQLModel):
     name: str
+    user_id: int | None = None
     age: int
     address: str
     medical_history: Optional[str]
     phone: str
-    email: Optional[str]
 
 
 class PatientRead(SQLModel):
@@ -18,7 +42,6 @@ class PatientRead(SQLModel):
     age: int
     medical_history: Optional[str]
     phone: str
-    email: Optional[str]
 
 
 class PatientUpdate(SQLModel):
@@ -27,17 +50,16 @@ class PatientUpdate(SQLModel):
     address: str | None = None
     medical_history: str | None = None
     phone: str | None = None
-    email: str | None = None
 
 
 class DoctorCreate(SQLModel):
     name: str
+    user_id: int | None = None
     age: int | None = None
     license_number: str
     experience: int
     degree: str
     phone: str
-    email: str
 
 
 class DoctorRead(SQLModel):
@@ -48,7 +70,6 @@ class DoctorRead(SQLModel):
     experience: int
     degree: str
     phone: str
-    email: str
 
 
 class DoctorUpdate(SQLModel):
@@ -59,11 +80,11 @@ class DoctorUpdate(SQLModel):
     experience: int | None = None
     degree: str | None = None
     phone: str | None = None
-    email: str | None = None
 
 
 class CareTakerCreate(SQLModel):
     name: str
+    user_id: int | None = None
     age: int | None = None
     license_number: str
     experience: int
