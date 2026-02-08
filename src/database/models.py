@@ -3,7 +3,7 @@ from sqlmodel import Field, SQLModel
 
 
 class Patient(SQLModel, table=True):
-    id: int | None = Field(default=0, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     name: str
     age: int | None = None
     address: str
@@ -13,7 +13,7 @@ class Patient(SQLModel, table=True):
 
 
 class Doctor(SQLModel, table=True):
-    id: int | None = Field(default=0, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     name: str
     age: int | None = None
     license_number: str
@@ -24,7 +24,7 @@ class Doctor(SQLModel, table=True):
 
 
 class CareTaker(SQLModel, table=True):
-    id: int | None = Field(default=0, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     name: str
     age: int | None = None
     license_number: str
