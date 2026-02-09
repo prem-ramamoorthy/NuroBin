@@ -6,9 +6,7 @@ def test_login_success(client, session):
     user = User(
         username="testuser",
         email="test@example.com",
-        password=get_password_hash(
-            "password123"
-        ),  # hash this if your auth expects hashing
+        password=get_password_hash("password123"),
         role=UserRole.patient,
         is_active=True,
     )
