@@ -66,7 +66,7 @@ def authenticate_user(session: Session, username: str, password: str) -> str | b
     return user
 
 
-def require_role(required_roles: list[UserRole]):
+def require_role(*required_roles: UserRole):
     def role_dependency(current_user: Annotated[User, Depends(get_current_user)]):
         if current_user.role not in required_roles:
             raise HTTPException(
