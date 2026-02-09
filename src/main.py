@@ -9,7 +9,7 @@ from sqlmodel.orm.session import Session
 
 from src.api.models import RegisterCareTaker, RegisterDoctor, RegisterPatient, UserApi
 from src.auth.jwt_auth import Token, create_access_token
-from src.auth.util import authenticate_user, get_current_user
+from src.auth.util import authenticate_user, get_current_user, require_role
 from src.config.config_env import Config
 from src.database.create_tables import create_db_table, get_session
 from src.database.crud import (
@@ -174,8 +174,8 @@ async def login(
     form_data: Annotated[OAuth2PasswordRequestFormStrict, Depends()],
     session: Session = Depends(get_session),
 ):
-    user = authenticate_user(session, form_data.username, form_data.password)
-    if not user:
+    username = authenticate_user(session, form_data.username, form_data.password)
+    if not username:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -183,6 +183,15 @@ async def login(
         )
     access_token_expires = timedelta(minutes=float(Config.ACCESS_TOKEN_EXPIRE_MINUTES))
     access_token = create_access_token(
-        data={"sub": user}, expires_delta=access_token_expires
+        data={"sub": username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
+
+
+@app.get("/profile")
+async def profile(
+    current_user: Annotated[
+        UserApi, Depends(require_role(UserRole.patient, UserRole.doctor))
+    ],
+):
+    return current_user
