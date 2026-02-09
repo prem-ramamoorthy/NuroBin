@@ -1,12 +1,13 @@
 from typing import Generator
 from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.orm.session import Session as engSession
-from src.database import models
 
-USERNAME = "postgres"
-PASSWORD = "mysecretpassword"
-HOST = "localhost"
-DATABASE = "nurobin"
+from src.config.config_env import Config
+
+USERNAME = Config.POSTGRES_USERNAME
+PASSWORD = Config.POSTGRES_PASSWORD
+HOST = Config.POSTGRES_HOST
+DATABASE = Config.POSTGRES_DB
 DATABASE_URL = f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:5432/{DATABASE}"
 
 
