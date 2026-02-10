@@ -6,6 +6,7 @@ from fastapi.security import (
     OAuth2PasswordRequestFormStrict,
 )
 from sqlmodel.orm.session import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.models import RegisterCareTaker, RegisterDoctor, RegisterPatient, UserApi
 from src.auth.jwt_auth import Token, create_access_token
@@ -53,14 +54,31 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the NuroBin Backend API!" , 
-            "endpoints": 
-                ["/patients/", "/doctors/", "/caretaker/", "/users/me", "/token", "/profile"] , 
-            "description": 
-                "This API allows you to manage patients, doctors, and caretakers. You can create, read, update, and delete records for each of these entities. Additionally, you can authenticate users and access protected endpoints based on their roles." , 
-            "health" : "OK"}
+    return {
+        "message": "Welcome to the NuroBin Backend API!",
+        "endpoints": [
+            "/patients/",
+            "/doctors/",
+            "/caretaker/",
+            "/users/me",
+            "/token",
+            "/profile",
+        ],
+        "description": "This API allows you to manage patients, doctors, and caretakers. You can create, read, update, and delete records for each of these entities. Additionally, you can authenticate users and access protected endpoints based on their roles.",
+        "health": "OK",
+    }
+
 
 @app.post("/patients/", response_model=PatientRead)
 async def add_patient(
