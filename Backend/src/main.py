@@ -53,6 +53,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the NuroBin Backend API!" , 
+            "endpoints": 
+                ["/patients/", "/doctors/", "/caretaker/", "/users/me", "/token", "/profile"] , 
+            "description": 
+                "This API allows you to manage patients, doctors, and caretakers. You can create, read, update, and delete records for each of these entities. Additionally, you can authenticate users and access protected endpoints based on their roles." , 
+            "health" : "OK"}
 
 @app.post("/patients/", response_model=PatientRead)
 async def add_patient(
