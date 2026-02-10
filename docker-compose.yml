@@ -6,7 +6,6 @@ services:
     ports:
       - "8080:8000"
     build:
-      # context: .
       dockerfile: Dockerfile 
 
   db:
