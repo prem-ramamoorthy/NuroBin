@@ -65,6 +65,7 @@ app.add_middleware(
 
 app.include_router(gmaps_router, prefix="/gmaps", tags=["gmaps"])
 
+
 @app.get("/")
 async def root():
     return {
@@ -133,7 +134,7 @@ async def add_doctor(doctor: RegisterDoctor, session: Session = Depends(get_sess
 
 @app.get("/doctors/{doctor_id}", response_model=DoctorRead)
 async def read_doctor(doctor_id, session: Session = Depends(get_session)):
-    return get_doctor(doctor_id, session)
+    return get_doctor(session, doctor_id=doctor_id)
 
 
 @app.get("/doctors/", response_model=list[DoctorRead])
