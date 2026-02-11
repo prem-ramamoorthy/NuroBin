@@ -1,6 +1,6 @@
 from typing import Tuple
 from sqlmodel import Session, select
-from src.database.models import Patient, Doctor, CareTaker, User
+from src.database.models import Patient, Doctor, CareTaker, User, Location, Place
 from src.database.schemas import (
     PatientCreate,
     PatientRead,
@@ -14,8 +14,13 @@ from src.database.schemas import (
     UserCreate,
     UserRead,
     UserUpdate,
+    LocationCreate,
+    LocationRead,
+    LocationUpdate,
+    PlaceCreate,
+    PlaceRead,
+    PlaceUpdate,
 )
-
 
 def create_user(session: Session, user_in: UserCreate) -> UserRead:
     user = User.model_validate(user_in)
@@ -149,7 +154,7 @@ def get_doctors(session: Session) -> list[DoctorRead]:
     return [DoctorRead.model_validate(d) for d in doctors]
 
 
-def get_doctor(doctor_id, session: Session) -> DoctorRead | None:
+def get_doctor(session: Session, doctor_id: int) -> DoctorRead | None:
     doctor = session.get(Doctor, doctor_id)
     return DoctorRead.model_validate(doctor) if doctor else None
 
@@ -231,5 +236,99 @@ def delete_caretaker(session: Session, caretaker_id: int) -> CareTakerRead | Non
         return None
     val = CareTakerRead.model_validate(caretaker) if caretaker else None
     session.delete(caretaker)
+    session.commit()
+    return val
+
+def create_location(
+    session: Session,
+    location_in: LocationCreate,
+) -> LocationRead:
+    location = Location.model_validate(location_in)
+
+    session.add(location)
+    session.commit()
+    session.refresh(location)
+
+    return LocationRead.model_validate(location)
+
+def get_location(session: Session, location_id: int) -> LocationRead | None:
+    location = session.get(Location, location_id)
+    return LocationRead.model_validate(location) if location else None
+
+def get_locations(session: Session) -> list[LocationRead]:
+    locations = session.exec(select(Location)).all()
+    return [LocationRead.model_validate(l) for l in locations]
+
+def update_location(
+    session: Session,
+    location_id: int,
+    location_in: LocationUpdate,
+) -> LocationRead | None:
+    location = session.get(Location, location_id)
+    if not location:
+        return None
+
+    update_data = location_in.model_dump(exclude_unset=True)
+    location.sqlmodel_update(update_data)
+
+    session.add(location)
+    session.commit()
+    session.refresh(location)
+
+    return LocationRead.model_validate(location)
+
+def delete_location(session: Session, location_id: int) -> LocationRead | None:
+    location = session.get(Location, location_id)
+    if not location:
+        return None
+    val = LocationRead.model_validate(location) if location else None
+    session.delete(location)
+    session.commit()
+    return val
+
+def create_place(
+    session: Session,
+    place_in: PlaceCreate,
+) -> PlaceRead:
+    place = Place.model_validate(place_in)
+
+    session.add(place)
+    session.commit()
+    session.refresh(place)
+
+    return PlaceRead.model_validate(place)
+
+def get_place(session: Session, place_id: int) -> PlaceRead | None:
+    place = session.get(Place, place_id)
+    return PlaceRead.model_validate(place) if place else None
+
+def get_places(session: Session, user_id: int = None) -> list[PlaceRead]:
+    places = session.exec(select(Place)).all()
+    return [PlaceRead.model_validate(p) for p in places]
+
+def update_place(
+    session: Session,
+    place_id: int,
+    place_in: PlaceUpdate,
+) -> PlaceRead | None:
+    place = session.get(Place, place_id)
+    if not place:
+        return None
+
+    update_data = place_in.model_dump(exclude_unset=True)
+    place.sqlmodel_update(update_data)
+
+    session.add(place)
+    session.commit()
+    session.refresh(place)
+
+    return PlaceRead.model_validate(place)
+
+def delete_place(session: Session, place_id: int) -> PlaceRead | None:
+    place = session.get(Place, place_id)
+    if not place:
+        return None
+    val = PlaceRead.model_validate(place) if place else None
+    session.delete(place)
     session.commit()
     return val

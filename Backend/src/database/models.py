@@ -48,3 +48,20 @@ class CareTaker(SQLModel, table=True):
     salary: float
     grade: str
     phone: str
+
+class Location(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    latitude: float
+    longitude: float
+    timestamp: float
+    created_at: float | None = None
+
+class Place(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    name: str
+    lat: float
+    lng: float
+    place_type: str | None = None # hospital, pharmacy, etc.
+    created_at: float | None = None

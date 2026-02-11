@@ -113,3 +113,40 @@ class CareTakerUpdate(SQLModel):
     salary: float | None = None
     grade: str | None = None
     phone: str | None = None
+
+class LocationCreate(SQLModel):
+    name: str
+    latitude: float
+    longitude: float
+
+
+class LocationRead(SQLModel):
+    id: int
+    name: str
+    latitude: float
+    longitude: float
+
+
+class LocationUpdate(SQLModel):
+    name: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+
+
+class PlaceCreate(SQLModel):
+    name: str
+    location_id: int
+    description: str | None = None
+
+
+class PlaceRead(SQLModel):
+    id: int
+    name: str
+    location_id: int
+    description: str | None = None
+
+
+class PlaceUpdate(SQLModel):
+    name: str | None = None
+    location_id: int | None = None
+    description: str | None = None
