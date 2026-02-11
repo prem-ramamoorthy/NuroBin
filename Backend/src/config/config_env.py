@@ -12,3 +12,4 @@ class Config:
     POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "mysecretpassword")
     POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
     POSTGRES_USERNAME = os.getenv("POSTGRES_USERNAME", "postgres")
+    GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")

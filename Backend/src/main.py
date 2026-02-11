@@ -44,6 +44,7 @@ from src.database.schemas import (
     PatientUpdate,
     UserCreate,
 )
+from src.gmaps.gmapsRouter import app as gmaps_router
 
 
 @asynccontextmanager
@@ -62,6 +63,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(gmaps_router, prefix="/gmaps", tags=["gmaps"])
 
 @app.get("/")
 async def root():
@@ -71,6 +73,7 @@ async def root():
             "/patients/",
             "/doctors/",
             "/caretaker/",
+            "/gmaps/",
             "/users/me",
             "/token",
             "/profile",
