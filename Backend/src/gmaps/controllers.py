@@ -97,7 +97,7 @@ def add_place(user_id: int, place, session: Session = Depends(get_session)):
 
 def list_places(user_id: int, session: Session = Depends(get_session)):
     try:
-        places = get_places(user_id, session)
+        places = get_places(session, user_id)
         return {"status": "ok", "user_id": user_id, "places": places}
     except Exception as e:
         raise HTTPException(500, f"Failed to retrieve places: {str(e)}")
