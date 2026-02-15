@@ -15,4 +15,4 @@ class PlaceCreate(BaseModel):
     lat: float
     lng: float
     address: Optional[str] = None
-    geofence_radius_m: Optional[int] = 150
+    geofence_radius_m: Optional[int] = 150 # default geofence radius for notifications in meters
