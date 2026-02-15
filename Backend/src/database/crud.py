@@ -1,6 +1,7 @@
 from typing import Tuple
 from sqlmodel import Session, select
 from src.database.models import Patient, Doctor, CareTaker, User, Location, Place
+import time
 from src.database.schemas import (
     PatientCreate,
     PatientRead,
@@ -291,7 +292,9 @@ def create_place(
     place_in: PlaceCreate,
 ) -> PlaceRead:
     place = Place.model_validate(place_in)
-
+    place.created_at = place.created_at or time.time()
+    if not place.place_type:
+        place.place_type = "generic"
     session.add(place)
     session.commit()
     session.refresh(place)

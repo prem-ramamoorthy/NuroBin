@@ -60,8 +60,9 @@ class Location(SQLModel, table=True):
 class Place(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
-    name: str
+    name: str = Field(index=True, unique=True)
     lat: float
     lng: float
     place_type: str | None = None # hospital, pharmacy, etc.
+    geofence_radius_m: int = 150
     created_at: float | None = None

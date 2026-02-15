@@ -1,8 +1,13 @@
+import pytest
+from sqlalchemy.exc import IntegrityError
+
 from src.database.crud import (
+    create_place,
     create_caretaker,
     create_doctor,
     create_patient,
     create_user,
+    get_place,
     delete_user,
     get_patient,
     get_user_username,
@@ -19,6 +24,7 @@ from src.database.schemas import (
     DoctorUpdate,
     PatientCreate,
     PatientUpdate,
+    PlaceCreate,
     UserCreate,
     UserUpdate,
 )
@@ -289,3 +295,52 @@ def test_create_caretaker(session):
     )
 
     assert caretaker.id is not None
+
+
+def test_create_place(session):
+    user = make_user(session)
+    place = create_place(
+        session,
+        PlaceCreate(
+            name="home",
+            user_id=user.id,
+            lat=12.91,
+            lng=77.59,
+            place_type="home",
+            geofence_radius_m=220,
+        ),
+    )
+
+    assert place.id is not None
+    assert place.user_id == user.id
+    assert place.name == "home"
+    assert place.lat == 12.91
+    assert place.lng == 77.59
+    assert place.geofence_radius_m == 220
+    assert get_place(session, place.id) is not None
+
+
+def test_create_place_duplicate_name_fails(session):
+    user = make_user(session)
+    create_place(
+        session,
+        PlaceCreate(
+            name="unique-home",
+            user_id=user.id,
+            lat=12.91,
+            lng=77.59,
+            place_type="home",
+        ),
+    )
+
+    with pytest.raises(IntegrityError):
+        create_place(
+            session,
+            PlaceCreate(
+                name="unique-home",
+                user_id=user.id,
+                lat=12.95,
+                lng=77.61,
+                place_type="office",
+            ),
+        )

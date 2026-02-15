@@ -135,18 +135,29 @@ class LocationUpdate(SQLModel):
 
 class PlaceCreate(SQLModel):
     name: str
-    location_id: int
-    description: str | None = None
-
+    user_id: int
+    lat: float
+    lng: float
+    place_type: str | None = None
+    geofence_radius_m: int = 150
+    created_at: float | None = None
 
 class PlaceRead(SQLModel):
     id: int
     name: str
-    location_id: int
-    description: str | None = None
+    user_id: int
+    lat: float
+    lng: float
+    place_type: str | None = None
+    geofence_radius_m: int
+    created_at: float | None = None
 
 
 class PlaceUpdate(SQLModel):
     name: str | None = None
-    location_id: int | None = None
-    description: str | None = None
+    user_id: int | None = None
+    lat: float | None = None
+    lng: float | None = None
+    place_type: str | None = None
+    geofence_radius_m: int | None = None
+    created_at: float | None = None

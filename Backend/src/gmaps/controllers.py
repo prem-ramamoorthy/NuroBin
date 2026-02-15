@@ -90,6 +90,9 @@ def add_place(user_id: int, place, session: Session = Depends(get_session)):
     try:
         place_data = place.model_dump()
         place_data["user_id"] = user_id
+        place_data["name"] = place_data.get("name") or place_data.get("label")
+        place_data["place_type"] = place_data.get("label")
+        place_data["geofence_radius_m"] = place_data.get("geofence_radius_m") or 150
         record = create_place(session, place_data)
         return {"status": "ok", "user_id": user_id, "place": record}
     except Exception as e:
