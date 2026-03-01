@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 from sqlmodel import Session, select
 from src.database.models import (
     FaceEmbedding,
@@ -167,8 +167,11 @@ def create_family_member(
 
 def get_family_members(
     session: Session,
+    patient_id: int,
 ) -> list[FamilyMemberRead]:
-    members = session.exec(select(FamilyMember)).all()
+    members = session.exec(
+        select(FamilyMember).where(FamilyMember.patient_id == patient_id)
+    ).all()
     return [FamilyMemberRead.model_validate(m) for m in members]
 
 
@@ -178,6 +181,25 @@ def get_family_member(
 ) -> FamilyMemberRead | None:
     member = session.get(FamilyMember, member_id)
     return FamilyMemberRead.model_validate(member) if member else None
+
+
+def get_closest_family_member(
+    session: Session, embedding: List[float], patient_id: int
+) -> FamilyMemberRead | None:
+    statement = (
+        select(FamilyMember)
+        .where(FamilyMember.patient_id == patient_id)
+        .join(FaceEmbedding)
+        .order_by(FaceEmbedding.embedding.cosine_distance(embedding))
+        .limit(1)
+    )
+    result = session.exec(statement=statement).first()
+
+    if result is None:
+        return None
+
+    member = result
+    return FamilyMemberRead.model_validate(member)
 
 
 def update_family_member(

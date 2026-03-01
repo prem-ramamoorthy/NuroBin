@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Union
+import numpy
 from sqlmodel import SQLModel
 
 from src.database.models import UserRole
@@ -54,8 +55,8 @@ class PatientUpdate(SQLModel):
 
 class FamilyMemberCreate(SQLModel):
     patient_id: int
-    name: str
-    relation: str
+    name: str | None
+    relation: str | None
     phone: str | None = None
 
 
@@ -188,7 +189,7 @@ class PlaceUpdate(SQLModel):
 
 class FaceEmbeddingCreate(SQLModel):
     family_member: int
-    embedding: list[float]
+    embedding: Union[list[float], numpy.typing.NDArray]
 
 
 class FaceEmbeddingRead(SQLModel):

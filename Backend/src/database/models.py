@@ -1,6 +1,7 @@
 from enum import Enum
-from sqlmodel import Column, Field, SQLModel
-from pgvector.sqlalchemy import Vector
+from typing import Any, cast
+from sqlmodel import Field, SQLModel
+from pgvector.sqlalchemy import VECTOR
 
 
 class UserRole(str, Enum):
@@ -31,8 +32,8 @@ class Patient(SQLModel, table=True):
 class FamilyMember(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     patient_id: int = Field(foreign_key="patient.id")
-    name: str
-    relation: str
+    name: str | None
+    relation: str | None
     phone: str | None = None
 
 
@@ -82,4 +83,4 @@ class Place(SQLModel, table=True):
 class FaceEmbedding(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     family_member: int = Field(foreign_key="familymember.id")
-    embedding: list[float] = Field(sa_column=Column(Vector(512)))
+    embedding: Any = Field(sa_type=cast(type[Any], VECTOR(128)))
