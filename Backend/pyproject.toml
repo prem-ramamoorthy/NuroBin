@@ -5,7 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "aiortc>=1.14.0",
+    "deepface>=0.0.98",
     "fastapi[standard]>=0.128.4",
+    "opencv-python>=4.13.0.92",
+    "pgvector>=0.4.2",
     "psycopg2-binary>=2.9.11",
     "pwdlib[argon2]>=0.3.0",
     "pyjwt>=2.11.0",
