@@ -52,6 +52,27 @@ class PatientUpdate(SQLModel):
     phone: str | None = None
 
 
+class FamilyMemberCreate(SQLModel):
+    patient_id: int
+    name: str
+    relation: str
+    phone: str | None = None
+
+
+class FamilyMemberRead(SQLModel):
+    id: int
+    patient_id: int
+    name: str
+    relation: str
+    phone: str | None
+
+
+class FamilyMemberUpdate(SQLModel):
+    name: str | None = None
+    relation: str | None = None
+    phone: str | None = None
+
+
 class DoctorCreate(SQLModel):
     name: str
     user_id: int | None = None
@@ -114,6 +135,7 @@ class CareTakerUpdate(SQLModel):
     grade: str | None = None
     phone: str | None = None
 
+
 class LocationCreate(SQLModel):
     name: str
     latitude: float
@@ -142,6 +164,7 @@ class PlaceCreate(SQLModel):
     geofence_radius_m: int = 150
     created_at: float | None = None
 
+
 class PlaceRead(SQLModel):
     id: int
     name: str
@@ -161,3 +184,13 @@ class PlaceUpdate(SQLModel):
     place_type: str | None = None
     geofence_radius_m: int | None = None
     created_at: float | None = None
+
+
+class FaceEmbeddingCreate(SQLModel):
+    family_member: int
+    embedding: list[float]
+
+
+class FaceEmbeddingRead(SQLModel):
+    id: int
+    family_member: int

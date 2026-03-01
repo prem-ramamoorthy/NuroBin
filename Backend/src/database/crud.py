@@ -1,8 +1,22 @@
 from typing import Tuple
 from sqlmodel import Session, select
-from src.database.models import Patient, Doctor, CareTaker, User, Location, Place
+from src.database.models import (
+    FaceEmbedding,
+    FamilyMember,
+    Patient,
+    Doctor,
+    CareTaker,
+    User,
+    Location,
+    Place,
+)
 import time
 from src.database.schemas import (
+    FaceEmbeddingCreate,
+    FaceEmbeddingRead,
+    FamilyMemberCreate,
+    FamilyMemberRead,
+    FamilyMemberUpdate,
     PatientCreate,
     PatientRead,
     PatientUpdate,
@@ -22,6 +36,7 @@ from src.database.schemas import (
     PlaceRead,
     PlaceUpdate,
 )
+
 
 def create_user(session: Session, user_in: UserCreate) -> UserRead:
     user = User.model_validate(user_in)
@@ -137,6 +152,69 @@ def delete_patient(
     return val
 
 
+def create_family_member(
+    session: Session,
+    family_member_in: FamilyMemberCreate,
+) -> FamilyMemberRead:
+    family_member = FamilyMember.model_validate(family_member_in)
+
+    session.add(family_member)
+    session.commit()
+    session.refresh(family_member)
+
+    return FamilyMemberRead.model_validate(family_member)
+
+
+def get_family_members(
+    session: Session,
+) -> list[FamilyMemberRead]:
+    members = session.exec(select(FamilyMember)).all()
+    return [FamilyMemberRead.model_validate(m) for m in members]
+
+
+def get_family_member(
+    session: Session,
+    member_id: int,
+) -> FamilyMemberRead | None:
+    member = session.get(FamilyMember, member_id)
+    return FamilyMemberRead.model_validate(member) if member else None
+
+
+def update_family_member(
+    session: Session,
+    member_id: int,
+    family_member_in: FamilyMemberUpdate,
+) -> FamilyMemberRead | None:
+    member = session.get(FamilyMember, member_id)
+    if not member:
+        return None
+
+    update_data = family_member_in.model_dump(exclude_unset=True)
+    member.sqlmodel_update(update_data)
+
+    session.add(member)
+    session.commit()
+    session.refresh(member)
+
+    return FamilyMemberRead.model_validate(member)
+
+
+def delete_family_member(
+    session: Session,
+    member_id: int,
+) -> FamilyMemberRead | None:
+    member = session.get(FamilyMember, member_id)
+    if not member:
+        return None
+
+    val = FamilyMemberRead.model_validate(member)
+
+    session.delete(member)
+    session.commit()
+
+    return val
+
+
 def create_doctor(
     session: Session,
     doctor_in: DoctorCreate,
@@ -240,6 +318,7 @@ def delete_caretaker(session: Session, caretaker_id: int) -> CareTakerRead | Non
     session.commit()
     return val
 
+
 def create_location(
     session: Session,
     location_in: LocationCreate,
@@ -252,13 +331,16 @@ def create_location(
 
     return LocationRead.model_validate(location)
 
+
 def get_location(session: Session, location_id: int) -> LocationRead | None:
     location = session.get(Location, location_id)
     return LocationRead.model_validate(location) if location else None
 
+
 def get_locations(session: Session) -> list[LocationRead]:
     locations = session.exec(select(Location)).all()
     return [LocationRead.model_validate(l) for l in locations]
+
 
 def update_location(
     session: Session,
@@ -278,6 +360,7 @@ def update_location(
 
     return LocationRead.model_validate(location)
 
+
 def delete_location(session: Session, location_id: int) -> LocationRead | None:
     location = session.get(Location, location_id)
     if not location:
@@ -286,6 +369,7 @@ def delete_location(session: Session, location_id: int) -> LocationRead | None:
     session.delete(location)
     session.commit()
     return val
+
 
 def create_place(
     session: Session,
@@ -301,13 +385,16 @@ def create_place(
 
     return PlaceRead.model_validate(place)
 
+
 def get_place(session: Session, place_id: int) -> PlaceRead | None:
     place = session.get(Place, place_id)
     return PlaceRead.model_validate(place) if place else None
 
+
 def get_places(session: Session, user_id: int = None) -> list[PlaceRead]:
     places = session.exec(select(Place)).all()
     return [PlaceRead.model_validate(p) for p in places]
+
 
 def update_place(
     session: Session,
@@ -327,6 +414,7 @@ def update_place(
 
     return PlaceRead.model_validate(place)
 
+
 def delete_place(session: Session, place_id: int) -> PlaceRead | None:
     place = session.get(Place, place_id)
     if not place:
@@ -334,4 +422,48 @@ def delete_place(session: Session, place_id: int) -> PlaceRead | None:
     val = PlaceRead.model_validate(place) if place else None
     session.delete(place)
     session.commit()
+    return val
+
+
+def create_face_embedding(
+    session: Session,
+    embedding_in: FaceEmbeddingCreate,
+) -> FaceEmbeddingRead:
+    embedding = FaceEmbedding.model_validate(embedding_in)
+
+    session.add(embedding)
+    session.commit()
+    session.refresh(embedding)
+
+    return FaceEmbeddingRead.model_validate(embedding)
+
+
+def get_face_embeddings(
+    session: Session,
+) -> list[FaceEmbeddingRead]:
+    embeddings = session.exec(select(FaceEmbedding)).all()
+    return [FaceEmbeddingRead.model_validate(e) for e in embeddings]
+
+
+def get_face_embedding(
+    session: Session,
+    embedding_id: int,
+) -> FaceEmbeddingRead | None:
+    embedding = session.get(FaceEmbedding, embedding_id)
+    return FaceEmbeddingRead.model_validate(embedding) if embedding else None
+
+
+def delete_face_embedding(
+    session: Session,
+    embedding_id: int,
+) -> FaceEmbeddingRead | None:
+    embedding = session.get(FaceEmbedding, embedding_id)
+    if not embedding:
+        return None
+
+    val = FaceEmbeddingRead.model_validate(embedding)
+
+    session.delete(embedding)
+    session.commit()
+
     return val
