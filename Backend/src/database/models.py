@@ -1,5 +1,6 @@
 from enum import Enum
-from sqlmodel import Field, SQLModel
+from sqlmodel import Column, Field, SQLModel
+from pgvector.sqlalchemy import Vector
 
 
 class UserRole(str, Enum):
@@ -27,6 +28,14 @@ class Patient(SQLModel, table=True):
     phone: str
 
 
+class FamilyMember(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    patient_id: int = Field(foreign_key="patient.id")
+    name: str
+    relation: str
+    phone: str | None = None
+
+
 class Doctor(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id", unique=True)
@@ -49,6 +58,7 @@ class CareTaker(SQLModel, table=True):
     grade: str
     phone: str
 
+
 class Location(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
@@ -57,12 +67,19 @@ class Location(SQLModel, table=True):
     timestamp: float
     created_at: float | None = None
 
+
 class Place(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
     name: str = Field(index=True, unique=True)
     lat: float
     lng: float
-    place_type: str | None = None # hospital, pharmacy, etc.
+    place_type: str | None = None  # hospital, pharmacy, etc.
     geofence_radius_m: int = 150
     created_at: float | None = None
+
+
+class FaceEmbedding(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    family_member: int = Field(foreign_key="familymember.id")
+    embedding: list[float] = Field(sa_column=Column(Vector(512)))
