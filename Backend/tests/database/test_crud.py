@@ -2,17 +2,24 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 
 from src.database.crud import (
+    create_face_embedding,
+    create_family_member,
     create_place,
     create_caretaker,
     create_doctor,
     create_patient,
     create_user,
+    delete_face_embedding,
+    delete_family_member,
+    get_face_embedding,
+    get_family_member,
     get_place,
     delete_user,
     get_patient,
     get_user_username,
     get_users,
     update_doctor,
+    update_family_member,
     update_patient,
     delete_patient,
     update_user,
@@ -22,6 +29,9 @@ from src.database.schemas import (
     CareTakerCreate,
     DoctorCreate,
     DoctorUpdate,
+    FaceEmbeddingCreate,
+    FamilyMemberCreate,
+    FamilyMemberUpdate,
     PatientCreate,
     PatientUpdate,
     PlaceCreate,
@@ -232,6 +242,137 @@ def test_delete_patient(session):
     assert get_patient(session, patient.id) is None
 
 
+def test_create_family_member(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient A",
+            user_id=user.id,
+            age=40,
+            address="X Street",
+            phone="123",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Alice",
+            relation="Sister",
+            phone="999",
+        ),
+    )
+
+    assert member.id is not None
+    assert member.name == "Alice"
+    assert member.patient_id == patient.id
+
+
+def test_get_family_member(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient B",
+            user_id=user.id,
+            age=50,
+            address="Y Street",
+            phone="456",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Bob",
+            relation="Brother",
+            phone=None,
+        ),
+    )
+
+    fetched = get_family_member(session, member.id)
+
+    assert fetched is not None
+    assert fetched.id == member.id
+    assert fetched.name == "Bob"
+
+
+def test_update_family_member(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient C",
+            user_id=user.id,
+            age=35,
+            address="Z Street",
+            phone="789",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Old Name",
+            relation="Father",
+            phone="111",
+        ),
+    )
+
+    updated = update_family_member(
+        session,
+        member.id,
+        FamilyMemberUpdate(
+            name="New Name",
+            phone="222",
+        ),
+    )
+
+    assert updated.name == "New Name"
+    assert updated.phone == "222"
+
+
+def test_delete_family_member(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient D",
+            user_id=user.id,
+            age=60,
+            address="A Street",
+            phone="321",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Delete Me",
+            relation="Cousin",
+            phone=None,
+        ),
+    )
+
+    deleted = delete_family_member(session, member.id)
+
+    assert deleted.id == member.id
+    assert get_family_member(session, member.id) is None
+
+
 def test_create_doctor(session):
     user = make_user(session)
     doctor = create_doctor(
@@ -344,3 +485,122 @@ def test_create_place_duplicate_name_fails(session):
                 place_type="office",
             ),
         )
+
+
+def make_embedding():
+    return [0.1] * 512
+
+
+def test_create_face_embedding(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient E",
+            user_id=user.id,
+            age=45,
+            address="B Street",
+            phone="654",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Embedding Person",
+            relation="Brother",
+            phone=None,
+        ),
+    )
+
+    embedding = create_face_embedding(
+        session,
+        FaceEmbeddingCreate(
+            family_member=member.id,
+            embedding=make_embedding(),
+        ),
+    )
+
+    assert embedding.id is not None
+    assert embedding.family_member == member.id
+
+
+def test_get_face_embedding(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient F",
+            user_id=user.id,
+            age=30,
+            address="C Street",
+            phone="987",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Single Embedding",
+            relation="Uncle",
+            phone=None,
+        ),
+    )
+
+    embedding = create_face_embedding(
+        session,
+        FaceEmbeddingCreate(
+            family_member=member.id,
+            embedding=make_embedding(),
+        ),
+    )
+
+    fetched = get_face_embedding(session, embedding.id)
+
+    assert fetched is not None
+    assert fetched.id == embedding.id
+
+
+def test_delete_face_embedding(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Patient G",
+            user_id=user.id,
+            age=28,
+            address="D Street",
+            phone="111",
+            medical_history="None",
+        ),
+    )
+
+    member = create_family_member(
+        session,
+        FamilyMemberCreate(
+            patient_id=patient.id,
+            name="Delete Embedding",
+            relation="Aunt",
+            phone=None,
+        ),
+    )
+
+    embedding = create_face_embedding(
+        session,
+        FaceEmbeddingCreate(
+            family_member=member.id,
+            embedding=make_embedding(),
+        ),
+    )
+
+    deleted = delete_face_embedding(session, embedding.id)
+
+    assert deleted.id == embedding.id
+    assert get_face_embedding(session, embedding.id) is None
