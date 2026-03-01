@@ -1,0 +1,23 @@
+services:
+  # app:
+  #   container_name: backend
+  #   volumes:
+  #     - .:/app
+  #   ports:
+  #     - "8080:8000"
+  #   build:
+  #     dockerfile: Dockerfile 
+
+  db:
+    container_name: postgres-db
+    build:
+        context: ./DB/
+        dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    # shm_size: 128mb
+    shm_size: 1g
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: nurobin
+
