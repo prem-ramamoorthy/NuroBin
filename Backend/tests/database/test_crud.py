@@ -488,7 +488,7 @@ def test_create_place_duplicate_name_fails(session):
 
 
 def make_embedding():
-    return [0.1] * 512
+    return [0.1] * 128
 
 
 def test_create_face_embedding(session):
