@@ -8,7 +8,20 @@ services:
   #   build:
   #     dockerfile: Dockerfile 
 
-  db:
+  # db:
+  #   container_name: postgres-db
+  #   build:
+  #       context: ./DB/
+  #       dockerfile: Dockerfile
+  #   ports:
+  #     - "5432:5432"
+  #   # shm_size: 128mb
+  #   shm_size: 1g
+  #   environment:
+  #     POSTGRES_PASSWORD: mysecretpassword
+  #     POSTGRES_DB: nurobin
+
+  db_test:
     container_name: postgres-db
     build:
         context: ./DB/
@@ -19,5 +32,5 @@ services:
     shm_size: 1g
     environment:
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: nurobin
+      POSTGRES_DB: test_db
 
