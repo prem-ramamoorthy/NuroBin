@@ -111,5 +111,9 @@ def analyze_frame(
             identities.append(f"Unknown individual {count}")
             count += 1
         else:
-            identities.append(member.name)
+            if not member.name:
+                identities.append(f"Unknown individual {count}")
+                count += 1
+            else:
+                identities.append(member.name)
     return identities, count
