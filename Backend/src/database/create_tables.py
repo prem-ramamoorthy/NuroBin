@@ -1,4 +1,5 @@
 from typing import Generator
+from sqlalchemy import text
 from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.orm.session import Session as engSession
 
@@ -20,6 +21,8 @@ def get_session() -> Generator[engSession, None, None]:
 
 
 def create_db_table():
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     SQLModel.metadata.create_all(engine)
 
 
