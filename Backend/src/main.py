@@ -45,6 +45,7 @@ from src.database.schemas import (
     UserCreate,
 )
 from src.gmaps.gmapsRouter import app as gmaps_router
+from src.video.route import router as face_router
 
 
 @asynccontextmanager
@@ -64,6 +65,7 @@ app.add_middleware(
 )
 
 app.include_router(gmaps_router, prefix="/gmaps", tags=["gmaps"])
+app.include_router(router=face_router)
 
 
 @app.get("/")
