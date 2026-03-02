@@ -10,10 +10,12 @@ dependencies = [
     "fastapi[standard]>=0.128.4",
     "opencv-python>=4.13.0.92",
     "pgvector>=0.4.2",
+    "pillow>=12.1.1",
     "psycopg2-binary>=2.9.11",
     "pwdlib[argon2]>=0.3.0",
     "pyjwt>=2.11.0",
     "sqlmodel>=0.0.32",
+    "tf-keras>=2.20.1",
 ]
 
 [dependency-groups]
