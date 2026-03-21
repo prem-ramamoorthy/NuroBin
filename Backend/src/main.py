@@ -14,11 +14,7 @@ from src.auth.util import authenticate_user, get_current_user, require_role
 from src.config.config_env import Config
 from src.database.create_tables import create_db_table, get_session
 from src.database.models import UserRole
-from src.gmaps.gmapsRouter import app as gmaps_router
-from src.video.route import router as face_router
-from src.api.routes.patient_route import patient_router
-from src.api.routes.doctor_route import doctor_router
-from src.api.routes.caretaker_routes import caretaker_router
+from src.api import routers
 
 
 @asynccontextmanager
@@ -37,11 +33,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router=patient_router)
-app.include_router(router=doctor_router)
-app.include_router(router=caretaker_router)
-app.include_router(gmaps_router, prefix="/gmaps", tags=["gmaps"])
-app.include_router(router=face_router)
+for router in routers:
+    app.include_router(router=router)
 
 
 @app.get("/")
