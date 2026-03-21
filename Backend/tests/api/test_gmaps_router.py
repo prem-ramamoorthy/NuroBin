@@ -15,7 +15,7 @@ def gmaps_client():
         yield session_sentinel
 
     app.dependency_overrides[gmapsRouter.get_session] = override_get_session
-    app.include_router(gmapsRouter.app, prefix="/gmaps")
+    app.include_router(gmapsRouter.app)
 
     with TestClient(app) as client:
         yield client, session_sentinel
