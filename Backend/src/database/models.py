@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Any, cast
 from sqlmodel import Field, SQLModel
+from datetime import datetime, timezone
 from pgvector.sqlalchemy import VECTOR
 
 
@@ -84,3 +85,38 @@ class FaceEmbedding(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     family_member: int = Field(foreign_key="familymember.id")
     embedding: Any = Field(sa_type=cast(type[Any], VECTOR(128)))
+
+
+class MeetingStatus(str, Enum):
+    scheduled = "scheduled"
+    completed = "completed"
+    cancelled = "cancelled"
+
+
+class Meeting(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    patient_id: int = Field(foreign_key="patient.id")
+    doctor_id: int = Field(foreign_key="doctor.id")
+    caretaker_id: int | None = Field(default=None, foreign_key="caretaker.id")
+    scheduled_time: datetime
+    duration_minutes: int | None = 30
+    status: MeetingStatus = MeetingStatus.scheduled
+    notes: str | None = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class DoctorPatientLink(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    doctor_id: int = Field(foreign_key="doctor.id")
+    patient_id: int = Field(foreign_key="patient.id")
+    assigned_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_primary: bool = False
+
+
+class CaretakerPatientLink(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    caretaker_id: int = Field(foreign_key="caretaker.id")
+    patient_id: int = Field(foreign_key="patient.id")
+    assigned_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    shift: str | None = None
+    is_primary: bool = False

@@ -1,8 +1,11 @@
 from typing import List, Tuple
 from sqlmodel import Session, select
 from src.database.models import (
+    CaretakerPatientLink,
+    DoctorPatientLink,
     FaceEmbedding,
     FamilyMember,
+    Meeting,
     Patient,
     Doctor,
     CareTaker,
@@ -12,11 +15,20 @@ from src.database.models import (
 )
 import time
 from src.database.schemas import (
+    CaretakerPatientLinkCreate,
+    CaretakerPatientLinkRead,
+    CaretakerPatientLinkUpdate,
+    DoctorPatientLinkCreate,
+    DoctorPatientLinkRead,
+    DoctorPatientLinkUpdate,
     FaceEmbeddingCreate,
     FaceEmbeddingRead,
     FamilyMemberCreate,
     FamilyMemberRead,
     FamilyMemberUpdate,
+    MeetingCreate,
+    MeetingRead,
+    MeetingUpdate,
     PatientCreate,
     PatientRead,
     PatientUpdate,
@@ -429,7 +441,6 @@ def update_place(
 
     update_data = place_in.model_dump(exclude_unset=True)
     place.sqlmodel_update(update_data)
-
     session.add(place)
     session.commit()
     session.refresh(place)
@@ -452,11 +463,9 @@ def create_face_embedding(
     embedding_in: FaceEmbeddingCreate,
 ) -> FaceEmbeddingRead:
     embedding = FaceEmbedding.model_validate(embedding_in)
-
     session.add(embedding)
     session.commit()
     session.refresh(embedding)
-
     return FaceEmbeddingRead.model_validate(embedding)
 
 
@@ -488,4 +497,144 @@ def delete_face_embedding(
     session.delete(embedding)
     session.commit()
 
+    return val
+
+
+def create_meeting(session: Session, meeting_in: MeetingCreate) -> MeetingRead:
+    meeting = Meeting.model_validate(meeting_in)
+    session.add(meeting)
+    session.commit()
+    session.refresh(meeting)
+    return MeetingRead.model_validate(meeting)
+
+
+def get_meeting(session: Session, meeting_id: int) -> MeetingRead | None:
+    meeting = session.get(Meeting, meeting_id)
+    return MeetingRead.model_validate(meeting) if meeting else None
+
+
+def get_meetings(session: Session) -> list[MeetingRead]:
+    meetings = session.exec(select(Meeting)).all()
+    return [MeetingRead.model_validate(m) for m in meetings]
+
+
+def update_meeting(
+    session: Session, meeting_id: int, meeting_in: MeetingUpdate
+) -> MeetingRead | None:
+    meeting = session.get(Meeting, meeting_id)
+    if not meeting:
+        return None
+    update_data = meeting_in.model_dump(exclude_unset=True)
+    meeting.sqlmodel_update(update_data)
+    session.add(meeting)
+    session.commit()
+    session.refresh(meeting)
+    return MeetingRead.model_validate(meeting)
+
+
+def delete_meeting(session: Session, meeting_id: int) -> MeetingRead | None:
+    meeting = session.get(Meeting, meeting_id)
+    if not meeting:
+        return None
+    val = MeetingRead.model_validate(meeting)
+    session.delete(meeting)
+    session.commit()
+    return val
+
+
+def create_doctor_patient_link(
+    session: Session, link_in: DoctorPatientLinkCreate
+) -> DoctorPatientLinkRead:
+    link = DoctorPatientLink.model_validate(link_in)
+    session.add(link)
+    session.commit()
+    session.refresh(link)
+    return DoctorPatientLinkRead.model_validate(link)
+
+
+def get_doctor_patient_link(
+    session: Session, link_id: int
+) -> DoctorPatientLinkRead | None:
+    link = session.get(DoctorPatientLink, link_id)
+    return DoctorPatientLinkRead.model_validate(link) if link else None
+
+
+def get_doctor_patient_links(session: Session) -> list[DoctorPatientLinkRead]:
+    links = session.exec(select(DoctorPatientLink)).all()
+    return [DoctorPatientLinkRead.model_validate(link) for link in links]
+
+
+def update_doctor_patient_link(
+    session: Session, link_id: int, link_in: DoctorPatientLinkUpdate
+) -> DoctorPatientLinkRead | None:
+    link = session.get(DoctorPatientLink, link_id)
+    if not link:
+        return None
+    update_data = link_in.model_dump(exclude_unset=True)
+    link.sqlmodel_update(update_data)
+    session.add(link)
+    session.commit()
+    session.refresh(link)
+    return DoctorPatientLinkRead.model_validate(link)
+
+
+def delete_doctor_patient_link(
+    session: Session, link_id: int
+) -> DoctorPatientLinkRead | None:
+    link = session.get(DoctorPatientLink, link_id)
+    if not link:
+        return None
+    val = DoctorPatientLinkRead.model_validate(link)
+    session.delete(link)
+    session.commit()
+    return val
+
+
+def create_caretaker_patient_link(
+    session: Session, link_in: CaretakerPatientLinkCreate
+) -> CaretakerPatientLinkRead:
+    link = CaretakerPatientLink.model_validate(link_in)
+    session.add(link)
+    session.commit()
+    session.refresh(link)
+    return CaretakerPatientLinkRead.model_validate(link)
+
+
+def get_caretaker_patient_link(
+    session: Session, link_id: int
+) -> CaretakerPatientLinkRead | None:
+    link = session.get(CaretakerPatientLink, link_id)
+    return CaretakerPatientLinkRead.model_validate(link) if link else None
+
+
+def get_caretaker_patient_links(
+    session: Session,
+) -> list[CaretakerPatientLinkRead]:
+    links = session.exec(select(CaretakerPatientLink)).all()
+    return [CaretakerPatientLinkRead.model_validate(link) for link in links]
+
+
+def update_caretaker_patient_link(
+    session: Session, link_id: int, link_in: CaretakerPatientLinkUpdate
+) -> CaretakerPatientLinkRead | None:
+    link = session.get(CaretakerPatientLink, link_id)
+    if not link:
+        return None
+    update_data = link_in.model_dump(exclude_unset=True)
+    link.sqlmodel_update(update_data)
+    session.add(link)
+    session.commit()
+    session.refresh(link)
+    return CaretakerPatientLinkRead.model_validate(link)
+
+
+def delete_caretaker_patient_link(
+    session: Session, link_id: int
+) -> CaretakerPatientLinkRead | None:
+    link = session.get(CaretakerPatientLink, link_id)
+    if not link:
+        return None
+    val = CaretakerPatientLinkRead.model_validate(link)
+    session.delete(link)
+    session.commit()
     return val

@@ -1,8 +1,8 @@
-from typing import List, Optional, Union
-import numpy
+from typing import List, Optional
 from sqlmodel import SQLModel
+from datetime import datetime
 
-from src.database.models import UserRole
+from src.database.models import MeetingStatus, UserRole
 
 
 class UserCreate(SQLModel):
@@ -195,3 +195,77 @@ class FaceEmbeddingCreate(SQLModel):
 class FaceEmbeddingRead(SQLModel):
     id: int
     family_member: int
+
+
+class MeetingCreate(SQLModel):
+    patient_id: int
+    doctor_id: int
+    caretaker_id: Optional[int] = None
+    scheduled_time: datetime
+    duration_minutes: Optional[int] = 30
+    notes: Optional[str] = None
+
+
+class MeetingRead(SQLModel):
+    id: int
+    patient_id: int
+    doctor_id: int
+    caretaker_id: Optional[int]
+    scheduled_time: datetime
+    duration_minutes: Optional[int]
+    status: MeetingStatus
+    notes: Optional[str]
+    created_at: datetime
+
+
+class MeetingUpdate(SQLModel):
+    patient_id: Optional[int] = None
+    doctor_id: Optional[int] = None
+    caretaker_id: Optional[int] = None
+    scheduled_time: Optional[datetime] = None
+    duration_minutes: Optional[int] = None
+    status: Optional[MeetingStatus] = None
+    notes: Optional[str] = None
+
+
+class DoctorPatientLinkCreate(SQLModel):
+    doctor_id: int
+    patient_id: int
+    is_primary: Optional[bool] = False
+
+
+class DoctorPatientLinkRead(SQLModel):
+    id: int
+    doctor_id: int
+    patient_id: int
+    is_primary: bool
+    assigned_at: datetime
+
+
+class DoctorPatientLinkUpdate(SQLModel):
+    doctor_id: Optional[int] = None
+    patient_id: Optional[int] = None
+    is_primary: Optional[bool] = None
+
+
+class CaretakerPatientLinkCreate(SQLModel):
+    caretaker_id: int
+    patient_id: int
+    shift: Optional[str] = None
+    is_primary: Optional[bool] = False
+
+
+class CaretakerPatientLinkRead(SQLModel):
+    id: int
+    caretaker_id: int
+    patient_id: int
+    shift: Optional[str]
+    is_primary: bool
+    assigned_at: datetime
+
+
+class CaretakerPatientLinkUpdate(SQLModel):
+    caretaker_id: Optional[int] = None
+    patient_id: Optional[int] = None
+    shift: Optional[str] = None
+    is_primary: Optional[bool] = None
