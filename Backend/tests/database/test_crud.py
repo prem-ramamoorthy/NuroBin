@@ -1,25 +1,37 @@
+from datetime import datetime, timezone
 import pytest
 from sqlalchemy.exc import IntegrityError
 
 from src.database.crud import (
+    create_caretaker_patient_link,
+    create_doctor_patient_link,
     create_face_embedding,
     create_family_member,
+    create_meeting,
     create_place,
     create_caretaker,
     create_doctor,
     create_patient,
     create_user,
+    delete_caretaker_patient_link,
+    delete_doctor_patient_link,
     delete_face_embedding,
     delete_family_member,
+    delete_meeting,
+    get_doctor_patient_link,
     get_face_embedding,
     get_family_member,
+    get_meeting,
     get_place,
     delete_user,
     get_patient,
     get_user_username,
     get_users,
+    update_caretaker_patient_link,
     update_doctor,
+    update_doctor_patient_link,
     update_family_member,
+    update_meeting,
     update_patient,
     delete_patient,
     update_user,
@@ -27,11 +39,17 @@ from src.database.crud import (
 from src.database.models import UserRole
 from src.database.schemas import (
     CareTakerCreate,
+    CaretakerPatientLinkCreate,
+    CaretakerPatientLinkUpdate,
     DoctorCreate,
+    DoctorPatientLinkCreate,
+    DoctorPatientLinkUpdate,
     DoctorUpdate,
     FaceEmbeddingCreate,
     FamilyMemberCreate,
     FamilyMemberUpdate,
+    MeetingCreate,
+    MeetingUpdate,
     PatientCreate,
     PatientUpdate,
     PlaceCreate,
@@ -604,3 +622,454 @@ def test_delete_face_embedding(session):
 
     assert deleted.id == embedding.id
     assert get_face_embedding(session, embedding.id) is None
+
+
+def test_create_meeting(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="Meeting Patient",
+            user_id=user.id,
+            age=30,
+            address="Addr",
+            phone="123",
+            medical_history="None",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="Doc",
+            user_id=user.id,
+            license_number="DOC1",
+            experience=10,
+            degree="MBBS",
+            phone="999",
+        ),
+    )
+
+    meeting = create_meeting(
+        session,
+        MeetingCreate(
+            patient_id=patient.id,
+            doctor_id=doctor.id,
+            scheduled_time=datetime.now(timezone.utc),
+        ),
+    )
+
+    assert meeting.id is not None
+    assert meeting.patient_id == patient.id
+    assert meeting.doctor_id == doctor.id
+
+
+def test_get_meeting(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=20,
+            address="X",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    meeting = create_meeting(
+        session,
+        MeetingCreate(
+            patient_id=patient.id,
+            doctor_id=doctor.id,
+            scheduled_time=datetime.now(timezone.utc),
+        ),
+    )
+
+    fetched = get_meeting(session, meeting.id)
+
+    assert fetched is not None
+    assert fetched.id == meeting.id
+
+
+def test_update_meeting(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=20,
+            address="X",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    meeting = create_meeting(
+        session,
+        MeetingCreate(
+            patient_id=patient.id,
+            doctor_id=doctor.id,
+            scheduled_time=datetime.now(timezone.utc),
+        ),
+    )
+
+    updated = update_meeting(
+        session,
+        meeting.id,
+        MeetingUpdate(notes="Updated notes"),
+    )
+
+    assert updated.notes == "Updated notes"
+
+
+def test_delete_meeting(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=20,
+            address="X",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    meeting = create_meeting(
+        session,
+        MeetingCreate(
+            patient_id=patient.id,
+            doctor_id=doctor.id,
+            scheduled_time=datetime.now(timezone.utc),
+        ),
+    )
+
+    deleted = delete_meeting(session, meeting.id)
+
+    assert deleted.id == meeting.id
+    assert get_meeting(session, meeting.id) is None
+
+
+def test_create_doctor_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=25,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L1",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    link = create_doctor_patient_link(
+        session,
+        DoctorPatientLinkCreate(
+            doctor_id=doctor.id,
+            patient_id=patient.id,
+        ),
+    )
+
+    assert link.id is not None
+    assert link.doctor_id == doctor.id
+
+
+def test_get_doctor_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=25,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L1",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    link = create_doctor_patient_link(
+        session,
+        DoctorPatientLinkCreate(doctor_id=doctor.id, patient_id=patient.id),
+    )
+
+    fetched = get_doctor_patient_link(session, link.id)
+
+    assert fetched is not None
+    assert fetched.id == link.id
+
+
+def test_update_doctor_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=25,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L1",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    link = create_doctor_patient_link(
+        session,
+        DoctorPatientLinkCreate(doctor_id=doctor.id, patient_id=patient.id),
+    )
+
+    updated = update_doctor_patient_link(
+        session,
+        link.id,
+        DoctorPatientLinkUpdate(is_primary=True),
+    )
+
+    assert updated.is_primary is True
+
+
+def test_delete_doctor_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=25,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    doctor = create_doctor(
+        session,
+        DoctorCreate(
+            name="D",
+            user_id=user.id,
+            license_number="L1",
+            experience=5,
+            degree="MBBS",
+            phone="2",
+        ),
+    )
+
+    link = create_doctor_patient_link(
+        session,
+        DoctorPatientLinkCreate(doctor_id=doctor.id, patient_id=patient.id),
+    )
+
+    deleted = delete_doctor_patient_link(session, link.id)
+
+    assert deleted.id == link.id
+
+
+def test_create_caretaker_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=40,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    caretaker = create_caretaker(
+        session,
+        CareTakerCreate(
+            name="C",
+            user_id=user.id,
+            license_number="C1",
+            experience=3,
+            salary=20000,
+            grade="B",
+            phone="2",
+        ),
+    )
+
+    link = create_caretaker_patient_link(
+        session,
+        CaretakerPatientLinkCreate(
+            caretaker_id=caretaker.id,
+            patient_id=patient.id,
+        ),
+    )
+
+    assert link.id is not None
+    assert link.caretaker_id == caretaker.id
+
+
+def test_update_caretaker_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=40,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    caretaker = create_caretaker(
+        session,
+        CareTakerCreate(
+            name="C",
+            user_id=user.id,
+            license_number="C1",
+            experience=3,
+            salary=20000,
+            grade="B",
+            phone="2",
+        ),
+    )
+
+    link = create_caretaker_patient_link(
+        session,
+        CaretakerPatientLinkCreate(
+            caretaker_id=caretaker.id,
+            patient_id=patient.id,
+        ),
+    )
+
+    updated = update_caretaker_patient_link(
+        session,
+        link.id,
+        CaretakerPatientLinkUpdate(shift="night"),
+    )
+
+    assert updated.shift == "night"
+
+
+def test_delete_caretaker_patient_link(session):
+    user = make_user(session)
+
+    patient = create_patient(
+        session,
+        PatientCreate(
+            name="P",
+            user_id=user.id,
+            age=40,
+            address="A",
+            phone="1",
+            medical_history="",
+        ),
+    )
+
+    caretaker = create_caretaker(
+        session,
+        CareTakerCreate(
+            name="C",
+            user_id=user.id,
+            license_number="C1",
+            experience=3,
+            salary=20000,
+            grade="B",
+            phone="2",
+        ),
+    )
+
+    link = create_caretaker_patient_link(
+        session,
+        CaretakerPatientLinkCreate(
+            caretaker_id=caretaker.id,
+            patient_id=patient.id,
+        ),
+    )
+
+    deleted = delete_caretaker_patient_link(session, link.id)
+
+    assert deleted.id == link.id
