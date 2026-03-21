@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from src.main import get_session
+from src.database.create_tables import get_session
 from src.video.face_identification import analyze_frame
 
 router = APIRouter(prefix="/face", tags=["Face"])
