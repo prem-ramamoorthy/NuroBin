@@ -12,7 +12,7 @@ from .controllers import (
 )
 from src.database.create_tables import get_session
 
-app = APIRouter()
+app = APIRouter(prefix="/gmaps", tags=["gmaps"])
 
 
 @app.post("/location/update")
