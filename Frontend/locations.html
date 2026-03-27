@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locations | NeuroBin</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-right: 1px solid var(--surface-border); padding: 2rem 1rem; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+        .sidebar-logo { font-size: 1.75rem; margin-bottom: 2.5rem; text-align: center; }
+        .nav-menu { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .menu-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); color: var(--text-muted); text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .menu-item:hover, .menu-item.active { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+        .menu-item svg { width: 24px; height: 24px; }
+        .logout-btn { margin-top: auto; color: var(--danger); }
+        .main-content { flex: 1; padding: 2.5rem; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        
+        .map-proxy { height: 400px; background: #e5e7eb; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--text-muted); box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); position: relative; overflow: hidden; }
+        .map-proxy::after { content: ''; position: absolute; inset: 0; background: url('https://upload.wikimedia.org/wikipedia/commons/a/a9/Map_of_the_world_with_equator.jpg') center/cover; opacity: 0.2; pointer-events: none; }
+        .location-pin { width: 14px; height: 14px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 4px rgba(79,70,229,0.2); position: absolute; z-index: 10; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(79,70,229,0.7); } 70% { box-shadow: 0 0 0 10px rgba(79,70,229,0); } 100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); } }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo"><span class="logo">NeuroBin</span></div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg> Dashboard
+            </a>
+            <a href="patients.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Patients
+            </a>
+            <a href="medications.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg> Medications
+            </a>
+            <a href="locations.html" class="menu-item active">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Locations
+            </a>
+            <a href="meetings.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Meetings
+            </a>
+            <a href="emergency.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg> Emergency
+            </a>
+            <a href="#" class="menu-item logout-btn" id="logoutBtn">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="header fade-in">
+            <h1>Geofencing & Locations</h1>
+            <p class="text-muted">Track patients and establish safe zones (Places).</p>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 2fr 1fr;">
+            <!-- Map View -->
+            <div class="glass-card fade-in" style="animation-delay: 0.1s; padding: 1.5rem;">
+                <div class="flex justify-between align-center mb-4">
+                    <h3>Live Tracking map</h3>
+                    <select class="form-select" style="width: 200px;" id="patientSelect" onchange="simulateTracking()">
+                        <option value="">Select Target...</option>
+                    </select>
+                </div>
+                <div class="map-proxy" id="mapWidget">
+                    <span>Select a patient to view telemetry...</span>
+                    <!-- Location pin injected via JS -->
+                </div>
+                <div class="mt-4 flex justify-between align-center">
+                    <span class="badge badge-success" id="geoStatus">Status: Safe Zone</span>
+                    <button class="btn btn-secondary" onclick="simulateLocationUpdate()">Force Telemetry Sync</button>
+                </div>
+            </div>
+
+            <!-- Places List -->
+            <div class="glass-card fade-in" style="animation-delay: 0.2s;">
+                <div class="flex justify-between align-center mb-4">
+                    <h3>Safe Places</h3>
+                    <button class="btn btn-primary" style="padding:0.25rem 0.75rem;" onclick="openModal('addPlaceModal')">+ Add</button>
+                </div>
+                <div id="placesList">
+                    <p class="text-center text-muted">No safe places designated.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Add Place -->
+<div class="modal-overlay" id="addPlaceModal">
+    <div class="glass-card modal-content" style="background: rgba(255,255,255,0.95); padding: 2rem;">
+        <div class="modal-header">
+            <h2 style="margin:0;">Designate Safe Place</h2>
+            <button class="modal-close" onclick="closeModal('addPlaceModal')">&times;</button>
+        </div>
+        <form id="addPlaceForm">
+            <div class="form-group">
+                <label class="form-label">Type Label (e.g., home, office)</label>
+                <input type="text" id="plLabel" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location Name</label>
+                <input type="text" id="plName" class="form-input" required>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-group">
+                    <label class="form-label">Latitude</label>
+                    <input type="number" step="0.0001" id="plLat" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Longitude</label>
+                    <input type="number" step="0.0001" id="plLng" class="form-input" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" id="plAddress" class="form-input">
+            </div>
+            <div class="form-group mb-6">
+                <label class="form-label">Geofence Radius (meters)</label>
+                <input type="number" id="plRadius" class="form-input" value="150">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Place</button>
+        </form>
+    </div>
+</div>
+
+<script src="api.js"></script>
+<script src="locations.js"></script>
+</body>
+</html>

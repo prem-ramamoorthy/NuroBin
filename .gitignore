@@ -143,6 +143,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+Backend/venv/
 
 # Spyder project settings
 .spyderproject
@@ -206,7 +207,11 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-
-.envrc
-.env
+# Project tracking and documentation
+context.md
+instruction.md
+NeuroBin Research Paper.md
 test.db
+
+.vscode
+openapi.json

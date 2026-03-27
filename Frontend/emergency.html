@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Call | NeuroBin</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-right: 1px solid var(--surface-border); padding: 2rem 1rem; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+        .sidebar-logo { font-size: 1.75rem; margin-bottom: 2.5rem; text-align: center; }
+        .nav-menu { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .menu-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); color: var(--text-muted); text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .menu-item:hover, .menu-item.active { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+        .menu-item svg { width: 24px; height: 24px; }
+        .logout-btn { margin-top: auto; color: var(--danger); }
+        .main-content { flex: 1; padding: 2.5rem; overflow-y: auto; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        
+        .vid-container { flex: 1; background: #000; border-radius: var(--radius-lg); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 400px; }
+        .vid-controls { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-radius: 99px; backdrop-filter: blur(8px); }
+        .control-btn { width: 50px; height: 50px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; transition: 0.2s; }
+        .control-btn.hangup { background: var(--danger); }
+        .control-btn.hangup:hover { background: #DC2626; transform: scale(1.05); }
+        .control-btn.action { background: rgba(255,255,255,0.2); }
+        .control-btn.action:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+
+        #remoteVideo { width: 100%; height: 100%; object-fit: cover; }
+        #localVideo { position: absolute; bottom: 2rem; right: 2rem; width: 200px; height: 150px; object-fit: cover; border-radius: var(--radius-sm); border: 2px solid rgba(255,255,255,0.5); background: #333; }
+        
+        .overlay-msg { position: absolute; color: white; font-size: 1.5rem; text-align: center; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo"><span class="logo">NeuroBin</span></div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg> Dashboard
+            </a>
+            <a href="patients.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Patients
+            </a>
+            <a href="medications.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg> Medications
+            </a>
+            <a href="locations.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Locations
+            </a>
+            <a href="meetings.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Meetings
+            </a>
+            <a href="emergency.html" class="menu-item active">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg> Emergency
+            </a>
+            <a href="#" class="menu-item logout-btn" id="logoutBtn">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="header fade-in">
+            <h1>Emergency Access & Intercom</h1>
+            <div class="flex gap-2 align-center">
+                <select class="form-select" id="patientSelect" style="width:200px;">
+                    <option value="">Select Patient</option>
+                </select>
+                <button class="btn btn-primary" id="startCallBtn">Commence Call</button>
+            </div>
+        </div>
+
+        <div class="vid-container fade-in" style="animation-delay: 0.1s;">
+            <div class="overlay-msg" id="statusOverlay">Click "Commence Call" to connect.</div>
+            <video id="remoteVideo" autoplay playsinline></video>
+            <video id="localVideo" autoplay playsinline muted></video>
+
+            <div class="vid-controls" style="display:none;" id="callControls">
+                <button class="control-btn action" id="muteBtn">
+                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                </button>
+                <button class="control-btn hangup" id="endCallBtn">
+                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8l2.485 2.485a4.5 4.5 0 01-6.364 6.364l-1.414-1.414M4 4l16 16M4 4v.01M4 4H3M4 4h.01M4 4L2 2m2 2l-2 2"/></svg>
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="api.js"></script>
+<script src="emergency.js"></script>
+</body>
+</html>
