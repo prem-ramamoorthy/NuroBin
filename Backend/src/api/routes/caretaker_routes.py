@@ -40,7 +40,7 @@ async def add_caretaker(
 
 @caretaker_router.get("/{caretaker_id}", response_model=CareTakerRead)
 async def read_caretaker(caretaker_id: int, session: Session = Depends(get_session)):
-    return get_caretaker(caretaker_id, session)
+    return get_caretaker(session, caretaker_id)
 
 
 @caretaker_router.get("/", response_model=list[CareTakerRead])

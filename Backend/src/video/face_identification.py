@@ -117,3 +117,22 @@ def analyze_frame(
             else:
                 identities.append(member.name)
     return identities, count
+
+def analyze_emotion(
+    session: Session, img: Union[Path, np.typing.NDArray, str], patientid: int
+) -> List[str]:
+    from deepface import DeepFace
+    
+    if isinstance(img, Path):
+        img = str(img)
+        
+    try:
+        # DeepFace.analyze returns a list of dictionaries if multiple faces are found
+        results = DeepFace.analyze(img_path=img, actions=['emotion'], enforce_detection=False)
+        emotions = []
+        for res in results:
+            emotions.append(res['dominant_emotion'])
+        return emotions
+    except Exception as e:
+        print("Emotion analysis error:", e)
+        return []

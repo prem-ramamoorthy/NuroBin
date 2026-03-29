@@ -165,49 +165,83 @@
 </head>
 <body>
 
+<!-- Theme Toggle Button -->
+<button id="themeToggleBtn" style="position: absolute; top: 1rem; right: 1rem; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); backdrop-filter: blur(8px); z-index: 1000; box-shadow: var(--shadow-sm);">
+    <svg id="themeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 20px; height: 20px;">
+        <!-- Icon set in JS -->
+    </svg>
+</button>
+
 <div class="layout">
     <aside class="sidebar">
         <div class="sidebar-logo">
             <span class="logo">NeuroBin</span>
         </div>
         <nav class="nav-menu">
+            <h4 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 1rem 0 0.5rem 0.5rem; letter-spacing: 0.05em;">Main</h4>
             <a href="dashboard.html" class="menu-item active">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 Dashboard
             </a>
             <a href="patients.html" class="menu-item">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                Patients
+                Face Log / Patients
             </a>
             <a href="medications.html" class="menu-item">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 Medications
             </a>
+            <a href="emotions.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Emotions
+            </a>
             <a href="locations.html" class="menu-item">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                Locations
+                Location
             </a>
             <a href="meetings.html" class="menu-item">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                Meetings
-            </a>
-            <a href="emergency.html" class="menu-item">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                Emergency
+                Settings (Meetings)
             </a>
 
-            <a href="#" class="menu-item logout-btn" id="logoutBtn">
+            <h4 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 0.5rem 0.5rem; letter-spacing: 0.05em;">Modules</h4>
+            <a href="memory.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Memory Journal
+            </a>
+            <a href="#" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                Voice Assistant
+            </a>
+            <a href="#" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Cognitive Games
+            </a>
+            <a href="#" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Medical Reports
+            </a>
+            <a href="#" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Digital Legacy
+            </a>
+            <a href="emergency.html" class="menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--danger);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Emergency SOS
+            </a>
+
+            <button class="menu-item logout-btn" onclick="ApiClient.logout()" style="background:none; border:none; text-align:left; font-family:inherit; font-size:inherit; width: 100%; cursor: pointer;">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 Logout
-            </a>
+            </button>
         </nav>
     </aside>
 
     <main class="main-content">
         <div class="header fade-in">
             <div>
-                <h1>Welcome Back</h1>
-                <p id="currDate">Loading date...</p>
+                <h1>Prototype Dashboard</h1>
+                <p id="currDate" class="text-muted">Caregiver Interface</p>
             </div>
             <div class="user-profile">
                 <div class="avatar" id="userInitial">U</div>
@@ -218,78 +252,120 @@
             </div>
         </div>
 
-        <div class="stats-grid fade-in" style="animation-delay: 0.1s;">
-            <div class="glass-card stat-card">
-                <div class="stat-icon blue">
-                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
+        <div class="stats-grid fade-in" style="animation-delay: 0.1s; grid-template-columns: repeat(4, 1fr);">
+            <div class="glass-card stat-card" style="border-left: 4px solid var(--success);">
                 <div class="stat-info">
-                    <h3>Total Patients</h3>
-                    <div class="value" id="totalPatients">-</div>
+                    <h3>Status</h3>
+                    <div class="value" id="systemStatus" style="color:var(--success);">SAFE</div>
+                    <div style="font-size: 0.8rem; color:var(--text-muted); margin-top:0.25rem;">Active Monitoring</div>
                 </div>
             </div>
-            <div class="glass-card stat-card">
-                <div class="stat-icon green">
-                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+            <div class="glass-card stat-card" style="border-left: 4px solid var(--success);">
                 <div class="stat-info">
-                    <h3>Med Adherence</h3>
-                    <div class="value">94%</div>
+                    <h3>Medication</h3>
+                    <div class="value" id="medAdherence">98%</div>
+                    <div style="font-size: 0.8rem; color:var(--text-muted); margin-top:0.25rem;">Adherence Rate</div>
                 </div>
             </div>
-            <div class="glass-card stat-card">
-                <div class="stat-icon orange">
-                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+            <div class="glass-card stat-card" style="border-left: 4px solid var(--warning);">
                 <div class="stat-info">
-                    <h3>Upcoming Meetings</h3>
-                    <div class="value" id="upcomingMeetings">-</div>
+                    <h3>Today's Mood</h3>
+                    <div class="value" id="todayMood">Calm</div>
+                    <div style="font-size: 0.8rem; color:var(--text-muted); margin-top:0.25rem;">Stable for 4 hrs</div>
                 </div>
             </div>
-            <div class="glass-card stat-card">
-                <div class="stat-icon red">
-                    <svg style="width:24px;height:24px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
+            <div class="glass-card stat-card" style="border-left: 4px solid var(--primary);">
                 <div class="stat-info">
-                    <h3>Active Alerts</h3>
-                    <div class="value">0</div>
+                    <h3>Last Known GPS</h3>
+                    <div class="value" id="lastGps">Home</div>
+                    <div style="font-size: 0.8rem; color:var(--text-muted); margin-top:0.25rem;">Updated 2 min ago</div>
                 </div>
             </div>
         </div>
 
-        <div class="grid" style="grid-template-columns: 2fr 1fr;">
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+            
+            <!-- Emotion Timeline -->
             <div class="glass-card fade-in" style="animation-delay: 0.2s;">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem;">Emotion Timeline — Today</h2>
+                <div id="emotionTimeline" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div><div class="flex justify-between mb-1"><span class="text-muted" style="font-size: 0.9rem;">Calm</span><span style="font-weight: 500;">75%</span></div><div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 99px;"><div style="width: 75%; background: var(--success); height: 100%; border-radius: 99px;"></div></div></div>
+                    <div><div class="flex justify-between mb-1"><span class="text-muted" style="font-size: 0.9rem;">Joy</span><span style="font-weight: 500;">55%</span></div><div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 99px;"><div style="width: 55%; background: #0D9488; height: 100%; border-radius: 99px;"></div></div></div>
+                    <div><div class="flex justify-between mb-1"><span class="text-muted" style="font-size: 0.9rem;">Confused</span><span style="font-weight: 500;">30%</span></div><div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 99px;"><div style="width: 30%; background: var(--warning); height: 100%; border-radius: 99px;"></div></div></div>
+                    <div><div class="flex justify-between mb-1"><span class="text-muted" style="font-size: 0.9rem;">Sadness</span><span style="font-weight: 500;">15%</span></div><div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 99px;"><div style="width: 15%; background: var(--primary); height: 100%; border-radius: 99px;"></div></div></div>
+                </div>
+            </div>
+
+            <!-- Focus / Face Events -->
+            <div class="glass-card fade-in" style="animation-delay: 0.3s; grid-column: span 2;">
                 <div class="flex justify-between align-center mb-4">
-                    <h2>Recent Patients</h2>
-                    <a href="patients.html" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;">View All</a>
+                    <h2 style="font-size: 1.1rem; margin-bottom: 0;">Recent Face Recognition Events</h2>
+                    <a href="patients.html" class="text-muted" style="font-size: 0.85rem; text-decoration: none;">View Log</a>
                 </div>
                 <div style="overflow-x:auto;">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>Phone</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="patientsTableBody">
-                            <tr><td colspan="4" class="text-center">Loading...</td></tr>
+                        <thead><tr><th>Time</th><th>Name</th><th>Match Prob.</th><th>Status</th></tr></thead>
+                        <tbody id="faceEventsList">
+                            <tr><td>10:32 AM</td><td><div style="font-weight: 500;">Priya (Daughter)</div></td><td>97%</td><td><span class="badge badge-success">Recognized</span></td></tr>
+                            <tr><td>09:15 AM</td><td><div style="font-weight: 500;">Dr. Mehta</div></td><td>94%</td><td><span class="badge badge-success">Recognized</span></td></tr>
+                            <tr><td>08:44 AM</td><td><div style="font-weight: 500; color: var(--danger);">Unknown Person</div></td><td>-</td><td><span class="badge badge-danger">Unknown</span></td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="glass-card fade-in" style="animation-delay: 0.3s;">
-                <h2>Today's Schedule</h2>
-                <div class="mt-4" id="meetingsList">
-                    <p class="text-center text-muted">Loading...</p>
+            <!-- Medication Tracker -->
+            <div class="glass-card fade-in" style="animation-delay: 0.4s;">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem;">Medication Tracker</h2>
+                <div id="medTrackerList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div class="flex justify-between align-center p-2" style="background: rgba(16,185,129,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(16,185,129,0.2); padding: 0.75rem;">
+                        <div><div style="font-weight:500;">Donepezil 10mg</div><div style="font-size:0.8rem; color:var(--text-muted);">8:00 AM</div></div>
+                        <span class="badge badge-success">Taken</span>
+                    </div>
+                    <div class="flex justify-between align-center p-2" style="background: rgba(16,185,129,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(16,185,129,0.2); padding: 0.75rem;">
+                        <div><div style="font-weight:500;">Memantine 5mg</div><div style="font-size:0.8rem; color:var(--text-muted);">1:00 PM</div></div>
+                        <span class="badge badge-success">Taken</span>
+                    </div>
+                    <div class="flex justify-between align-center p-2" style="background: rgba(245,158,11,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(245,158,11,0.2); padding: 0.75rem;">
+                        <div><div style="font-weight:500;">Vitamin D3</div><div style="font-size:0.8rem; color:var(--text-muted);">8:00 PM</div></div>
+                        <span class="badge badge-warning">Pending</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Memory Triggers -->
+            <div class="glass-card fade-in" style="animation-delay: 0.5s;">
+                <div class="flex justify-between align-center mb-4">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 0;">Memory Triggers</h2>
+                    <a href="memory.html" class="text-muted" style="font-size: 0.85rem; text-decoration: none;">Edit</a>
+                </div>
+                <ul id="memoryTriggersList" style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li style="padding: 0.75rem; background: rgba(0,0,0,0.02); border-radius: var(--radius-sm); border-left: 3px solid var(--primary); font-size: 0.9rem;">Priya loves blue sarees — Benaras trip 2018</li>
+                    <li style="padding: 0.75rem; background: rgba(0,0,0,0.02); border-radius: var(--radius-sm); border-left: 3px solid var(--primary); font-size: 0.9rem;">Favourite song: Lata Mangeshkar — Lag Ja Gale</li>
+                    <li style="padding: 0.75rem; background: rgba(0,0,0,0.02); border-radius: var(--radius-sm); border-left: 3px solid var(--primary); font-size: 0.9rem;">Dad's dog name was Brownie, a Labrador</li>
+                </ul>
+            </div>
+
+            <!-- Active Alerts -->
+            <div class="glass-card fade-in" style="animation-delay: 0.6s;">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem;">Active Alerts</h2>
+                <div id="alertsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="padding: 0.75rem; background: rgba(245,158,11,0.05); border-left: 3px solid var(--warning); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+                        <div style="font-weight: 500; font-size: 0.95rem;">Evening medication reminder</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Due in 2 hours</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: rgba(239,68,68,0.05); border-left: 3px solid var(--danger); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+                        <div style="font-weight: 500; font-size: 0.95rem;">No movement detected</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Detected 18 min ago</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 </div>
 
+<script src="theme.js"></script>
 <script src="api.js"></script>
 <script src="dashboard.js"></script>
 </body>

@@ -22,6 +22,14 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body.dark-theme {
+  --background: #111827;
+  --surface: rgba(31, 41, 55, 0.75);
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --text-main: #F3F4F6;
+  --text-muted: #9CA3AF;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -34,6 +42,10 @@ body {
   color: var(--text-main);
   line-height: 1.5;
   min-height: 100vh;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body:not(.dark-theme) {
   /* Soft abstract gradient background */
   background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
   background-attachment: fixed;
@@ -91,9 +103,18 @@ body::after {
   transition: var(--transition);
 }
 
+body.dark-theme .glass-card {
+  background: rgba(31, 41, 55, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .glass-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .glass-card:hover {
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.4);
 }
 
 /* Typography */
@@ -145,11 +166,20 @@ p {
   color: var(--text-main);
 }
 
+body.dark-theme .form-input, body.dark-theme .form-select, body.dark-theme .form-textarea {
+  background: rgba(17, 24, 39, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
   background: #FFF;
+}
+
+body.dark-theme .form-input:focus, body.dark-theme .form-select:focus, body.dark-theme .form-textarea:focus {
+  background: rgba(17, 24, 39, 1);
 }
 
 /* Buttons */
@@ -186,10 +216,19 @@ p {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+body.dark-theme .btn-secondary {
+  background: rgba(31, 41, 55, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .btn-secondary:hover {
   background: #FFF;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+body.dark-theme .btn-secondary:hover {
+  background: rgba(55, 65, 81, 1);
 }
 
 .btn-danger {
@@ -376,4 +415,292 @@ p {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   DARK THEME — Comprehensive Overrides (use !important to beat
+   page-level <style> blocks that hardcode light colors)
+   ============================================================ */
+
+/* Dark theme also on html for early paint */
+html.dark-theme {
+  background: #111827 !important;
+}
+
+body.dark-theme {
+  background: #111827 !important;
+  color: #F3F4F6 !important;
+}
+
+/* Kill the light-mode gradient explicitly */
+body.dark-theme {
+  background-image: none !important;
+}
+
+/* Dark background blobs */
+body.dark-theme::before {
+  background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, rgba(0,0,0,0) 70%) !important;
+}
+body.dark-theme::after {
+  background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(0,0,0,0) 70%) !important;
+}
+
+/* Glass panel (login card, etc.) */
+body.dark-theme .glass-panel {
+  background: rgba(31, 41, 55, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Glass card */
+body.dark-theme .glass-card {
+  background: rgba(31, 41, 55, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar — force dark + independent scrolling */
+body.dark-theme .sidebar,
+body.dark-theme .admin-sidebar {
+  background: rgba(17, 24, 39, 0.97) !important;
+  border-right-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .menu-item {
+  color: #9CA3AF !important;
+}
+body.dark-theme .menu-item:hover,
+body.dark-theme .menu-item.active {
+  background: rgba(79, 70, 229, 0.2) !important;
+  color: #A5B4FC !important;
+}
+
+/* Header / welcome bar area */
+body.dark-theme .header h1 {
+  color: #F3F4F6 !important;
+}
+
+/* Tables */
+body.dark-theme th {
+  color: #9CA3AF !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+body.dark-theme td {
+  color: #F3F4F6 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Form inputs */
+body.dark-theme .form-input,
+body.dark-theme .form-select,
+body.dark-theme .form-textarea {
+  background: rgba(17, 24, 39, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #F3F4F6 !important;
+}
+body.dark-theme .form-select option {
+  background: #111827 !important;
+  color: #F3F4F6 !important;
+}
+body.dark-theme .form-input:focus,
+body.dark-theme .form-select:focus,
+body.dark-theme .form-textarea:focus {
+  background: rgba(17, 24, 39, 1) !important;
+}
+
+/* Button secondary */
+body.dark-theme .btn-secondary {
+  background: rgba(31, 41, 55, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #F3F4F6 !important;
+}
+body.dark-theme .btn-secondary:hover {
+  background: rgba(55, 65, 81, 1) !important;
+}
+
+/* Toast notifications */
+body.dark-theme .toast {
+  background: #1F2937 !important;
+  color: #F3F4F6 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
+/* Modal overlay */
+body.dark-theme .modal-overlay {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+body.dark-theme .modal-content {
+  background: #1F2937 !important;
+}
+
+/* Login page tabs */
+body.dark-theme .tabs {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+body.dark-theme .tab {
+  color: #9CA3AF !important;
+}
+body.dark-theme .tab.active {
+  background: rgba(79, 70, 229, 0.25) !important;
+  color: #A5B4FC !important;
+  box-shadow: none !important;
+}
+
+/* Demo credentials box */
+body.dark-theme .demo-creds {
+  background: rgba(79, 70, 229, 0.1) !important;
+  border-color: rgba(79, 70, 229, 0.3) !important;
+}
+body.dark-theme .demo-creds:hover {
+  background: rgba(79, 70, 229, 0.15) !important;
+}
+body.dark-theme .demo-creds code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #F3F4F6 !important;
+}
+
+/* Feature bullets on login */
+body.dark-theme .feature-item {
+  color: #9CA3AF !important;
+}
+body.dark-theme .feature-bullets {
+  border-top-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Stat cards */
+body.dark-theme .stat-card {
+  background: rgba(31, 41, 55, 0.65) !important;
+}
+body.dark-theme .stat-info h3 {
+  color: #9CA3AF !important;
+}
+
+/* General labels, paragraphs */
+body.dark-theme p {
+  color: #9CA3AF !important;
+}
+body.dark-theme h1, body.dark-theme h2,
+body.dark-theme h3, body.dark-theme h4 {
+  color: #F3F4F6 !important;
+}
+
+/* Admin user rows */
+body.dark-theme .user-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Avatar text stays white */
+body.dark-theme .avatar {
+  color: white !important;
+}
+
+/* Password toggle */
+body.dark-theme .password-toggle {
+  color: #9CA3AF !important;
+}
+body.dark-theme .password-toggle:hover {
+  color: var(--primary) !important;
+}
+
+/* Catch-all for inline border dividers */
+body.dark-theme [style*="border-color: rgba(0,0,0,0.05)"] {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ============================================================
+   SIDEBAR SCROLL FIX — Independent scrolling
+   ============================================================ */
+body {
+  /* Prevent root level scroll if layout takes 100vh */
+  overflow: hidden;
+}
+
+.sidebar, .admin-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* Prevent main content from scrolling when hovering over sidebar */
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* For pages like login that don't have .layout */
+body:has(.login-wrapper) {
+  overflow-y: auto;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBARS — Premium thin scrollbar styling
+   ============================================================ */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.2) transparent;
+}
+body.dark-theme * {
+  scrollbar-color: rgba(75, 85, 99, 0.3) transparent;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Hover effect to reveal scrollbar */
+*:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Dark mode scrollbar */
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.15);
+}
+body.dark-theme *:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+}
+
+/* Sidebar scrollbar — completely hidden until hover */
+.sidebar::-webkit-scrollbar,
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb,
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.sidebar:hover::-webkit-scrollbar-thumb,
+.admin-sidebar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+body.dark-theme .sidebar:hover::-webkit-scrollbar-thumb,
+body.dark-theme .admin-sidebar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+}
+
+/* Login page — hide scrollbar unless needed */
+.login-wrapper {
+  scrollbar-width: none;
+}
+.login-wrapper::-webkit-scrollbar {
+  display: none;
 }

@@ -6,6 +6,8 @@ from src.api.routes.caretaker_patient_link import caretaker_patient_link_router
 from src.api.routes.doctor_patient_link_routes import doctor_patient_link_router
 from src.gmaps.gmapsRouter import app as gmaps_router
 from src.video.route import router as face_router
+from src.api.routes.admin_route import admin_router
+from src.api.routes.family_member_route import router as family_member_router
 
 routers = [
     patient_router,
@@ -16,4 +18,6 @@ routers = [
     meeting_router,
     caretaker_patient_link_router,
     doctor_patient_link_router,
+    admin_router,
+    family_member_router,
 ]

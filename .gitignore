@@ -216,3 +216,4 @@ test.db
 .vscode
 openapi.json
 pass.txt
+ui.json

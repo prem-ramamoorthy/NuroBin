@@ -30,6 +30,9 @@ document.getElementById('startCallBtn').addEventListener('click', async () => {
     document.getElementById('callControls').style.display = 'flex';
 
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error("Media devices not supported. Please ensure you are using a secure context (HTTPS/localhost).");
+        }
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         document.getElementById('localVideo').srcObject = localStream;
 
@@ -72,8 +75,19 @@ document.getElementById('startCallBtn').addEventListener('click', async () => {
 
     } catch(err) {
         console.error("WebRTC Error:", err);
-        status.textContent = "Connection failed. Check permissions.";
-        ApiClient.notify("Camera/Microphone access required", "error");
+        let errorMsg = "Connection failed. Check permissions.";
+        
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            errorMsg = "CRITICAL: Browsers block camera/mic on non-secure (HTTP) sites. Please use HTTPS or localhost.";
+        } else if (err.name === 'NotAllowedError') {
+            errorMsg = "Permission Denied: Please allow camera access in your browser settings.";
+        } else if (err.name === 'NotFoundError') {
+            errorMsg = "No camera or microphone found on your device.";
+        }
+
+        status.textContent = errorMsg;
+        status.style.color = "#ef4444";
+        ApiClient.notify(errorMsg, "error");
     }
 });
 

@@ -9,6 +9,7 @@ class UserRole(str, Enum):
     patient = "patient"
     doctor = "doctor"
     caretaker = "caretaker"
+    admin = "admin"
 
 
 class User(SQLModel, table=True):
@@ -36,6 +37,8 @@ class FamilyMember(SQLModel, table=True):
     name: str | None
     relation: str | None
     phone: str | None = None
+    notes: str | None = None  # Specifically for Memory Triggers
+    photo_url: str | None = None
 
 
 class Doctor(SQLModel, table=True):

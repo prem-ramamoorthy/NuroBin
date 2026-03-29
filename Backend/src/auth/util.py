@@ -2,9 +2,9 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import jwt
-from pwdlib import PasswordHash
 from sqlmodel import Session
 from src.api.models import UserApi
+from src.auth.hashing import verify_password, get_password_hash
 from src.auth.jwt_auth import TokenData
 from src.config.config_env import Config
 from src.database.create_tables import get_session
@@ -13,7 +13,6 @@ from src.database.models import User, UserRole
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-password_hash = PasswordHash.recommended()
 
 
 async def get_current_user(
@@ -49,12 +48,7 @@ async def get_current_active_user(
     return current_user
 
 
-def verify_password(plain_password, hashed_password):
-    return password_hash.verify(plain_password, hashed_password)
-
-
-def get_password_hash(plain_password):
-    return password_hash.hash(password=plain_password)
+# Functions are now imported from src.auth.hashing
 
 
 def authenticate_user(session: Session, username: str, password: str) -> str | bool:

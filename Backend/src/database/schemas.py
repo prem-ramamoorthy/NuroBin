@@ -38,6 +38,7 @@ class PatientCreate(SQLModel):
 
 class PatientRead(SQLModel):
     id: int
+    user_id: int
     name: str
     address: str
     age: int
@@ -58,6 +59,8 @@ class FamilyMemberCreate(SQLModel):
     name: str | None
     relation: str | None
     phone: str | None = None
+    notes: str | None = None
+    photo_url: str | None = None
 
 
 class FamilyMemberRead(SQLModel):
@@ -66,12 +69,16 @@ class FamilyMemberRead(SQLModel):
     name: str | None
     relation: str | None
     phone: str | None
+    notes: str | None
+    photo_url: str | None
 
 
 class FamilyMemberUpdate(SQLModel):
     name: str | None = None
     relation: str | None = None
     phone: str | None = None
+    notes: str | None = None
+    photo_url: str | None = None
 
 
 class DoctorCreate(SQLModel):
@@ -86,6 +93,7 @@ class DoctorCreate(SQLModel):
 
 class DoctorRead(SQLModel):
     id: int
+    user_id: int
     name: str
     age: int | None = None
     license_number: str
@@ -117,6 +125,7 @@ class CareTakerCreate(SQLModel):
 
 class CareTakerRead(SQLModel):
     id: int
+    user_id: int
     name: str
     age: int | None = None
     license_number: str

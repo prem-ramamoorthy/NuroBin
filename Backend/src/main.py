@@ -82,7 +82,7 @@ async def login(
 @app.get("/profile")
 async def profile(
     current_user: Annotated[
-        UserApi, Depends(require_role(UserRole.patient, UserRole.doctor))
+        UserApi, Depends(require_role(UserRole.patient, UserRole.doctor, UserRole.caretaker, UserRole.admin))
     ],
 ):
     return current_user

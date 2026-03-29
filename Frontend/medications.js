@@ -35,14 +35,14 @@ function loadMedications() {
     // Given the openapi.json, we don't have a specific medications DB endpoint yet besides "medical_history".
     // We will append medicine metadata to medical_history or just simulate it for UI demo purposes.
     list.innerHTML = `
-        <div style="background: white; border-radius: var(--radius-sm); padding: 1rem; border: 1px solid var(--surface-border); margin-bottom: 0.5rem; display:flex; justify-content:space-between; align-items:center;">
+        <div class="glass-panel" style="border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 0.5rem; display:flex; justify-content:space-between; align-items:center;">
             <div>
                 <h4 style="margin:0;">Donepezil 5mg</h4>
                 <p style="margin:0; font-size:0.85rem;" class="text-muted">Twice Daily (Morning, Evening)</p>
             </div>
             <span class="badge badge-success">Active</span>
         </div>
-        <div style="background: white; border-radius: var(--radius-sm); padding: 1rem; border: 1px solid var(--surface-border); display:flex; justify-content:space-between; align-items:center;">
+        <div class="glass-panel" style="border-radius: var(--radius-sm); padding: 1rem; display:flex; justify-content:space-between; align-items:center;">
             <div>
                 <h4 style="margin:0;">Memantine 10mg</h4>
                 <p style="margin:0; font-size:0.85rem;" class="text-muted">Once Daily</p>

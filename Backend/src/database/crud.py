@@ -50,8 +50,12 @@ from src.database.schemas import (
 )
 
 
+from src.auth.hashing import get_password_hash
+
 def create_user(session: Session, user_in: UserCreate) -> UserRead:
-    user = User.model_validate(user_in)
+    user_dict = user_in.model_dump()
+    user_dict["password"] = get_password_hash(user_dict["password"])
+    user = User.model_validate(user_dict)
 
     session.add(user)
     session.commit()
@@ -101,9 +105,25 @@ def delete_user(session: Session, user_id: int) -> UserRead | None:
     user = session.get(User, user_id)
     if not user:
         return None
+    val = UserRead.model_validate(user)
+    
+    # Simple manual cascade for profiles
+    p = session.exec(select(Patient).where(Patient.user_id == user_id)).first()
+    if p: session.delete(p)
+    d = session.exec(select(Doctor).where(Doctor.user_id == user_id)).first()
+    if d: session.delete(d)
+    c = session.exec(select(CareTaker).where(CareTaker.user_id == user_id)).first()
+    if c: session.delete(c)
+    
+    # Locations and Places
+    for l in session.exec(select(Location).where(Location.user_id == user_id)).all():
+        session.delete(l)
+    for pl in session.exec(select(Place).where(Place.user_id == user_id)).all():
+        session.delete(pl)
+    
     session.delete(user)
     session.commit()
-    return UserRead.model_validate(user)
+    return val
 
 
 def create_patient(
@@ -314,7 +334,7 @@ def create_caretaker(
     return CareTakerRead.model_validate(caretaker)
 
 
-def get_caretaker(caretaker_id: int, session: Session) -> CareTakerRead | None:
+def get_caretaker(session: Session, caretaker_id: int) -> CareTakerRead | None:
     caretaker = session.get(CareTaker, caretaker_id)
     return CareTakerRead.model_validate(caretaker) if caretaker else None
 
@@ -638,3 +658,34 @@ def delete_caretaker_patient_link(
     session.delete(link)
     session.commit()
     return val
+def create_family_member(session: Session, fm_in: FamilyMemberCreate) -> FamilyMemberRead:
+    fm = FamilyMember.model_validate(fm_in)
+    session.add(fm)
+    session.commit()
+    session.refresh(fm)
+    return FamilyMemberRead.model_validate(fm)
+
+def get_family_member(session: Session, fm_id: int) -> FamilyMemberRead | None:
+    fm = session.get(FamilyMember, fm_id)
+    return FamilyMemberRead.model_validate(fm) if fm else None
+
+def get_family_members_by_patient(session: Session, patient_id: int) -> list[FamilyMemberRead]:
+    fms = session.exec(select(FamilyMember).where(FamilyMember.patient_id == patient_id)).all()
+    return [FamilyMemberRead.model_validate(fm) for fm in fms]
+
+def update_family_member(session: Session, fm_id: int, fm_in: FamilyMemberUpdate) -> FamilyMemberRead | None:
+    fm = session.get(FamilyMember, fm_id)
+    if not fm: return None
+    update_data = fm_in.model_dump(exclude_unset=True)
+    fm.sqlmodel_update(update_data)
+    session.add(fm)
+    session.commit()
+    session.refresh(fm)
+    return FamilyMemberRead.model_validate(fm)
+
+def delete_family_member(session: Session, fm_id: int) -> bool:
+    fm = session.get(FamilyMember, fm_id)
+    if not fm: return False
+    session.delete(fm)
+    session.commit()
+    return True

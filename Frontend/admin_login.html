@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | NeuroBin</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .login-card {
+            max-width: 450px;
+            width: 100%;
+            padding: 2.5rem;
+        }
+        .admin-badge {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Theme Toggle Button -->
+<button id="themeToggleBtn" style="position: absolute; top: 1rem; right: 1rem; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); backdrop-filter: blur(8px); z-index: 1000; box-shadow: var(--shadow-sm);">
+    <svg id="themeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 20px; height: 20px;">
+    </svg>
+</button>
+
+<div class="login-wrapper">
+    <div class="glass-panel login-card fade-in">
+        <div class="text-center">
+            <span class="admin-badge">Admin Access</span>
+            <h1 class="logo">NeuroBin</h1>
+            <p>System Administration Portal</p>
+        </div>
+
+        <form id="loginForm" class="mt-8">
+            <div class="form-group">
+                <label class="form-label" for="username">Admin Email</label>
+                <input type="text" id="username" class="form-input" placeholder="admin@neurobin.com" required>
+            </div>
+            
+            <div class="form-group mb-6">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                Enter Console
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-muted" style="text-decoration: none; font-size: 0.85rem;">
+                Back to User Login
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="theme.js"></script>
+<script src="api.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const form = document.getElementById('loginForm');
+        const btn = document.getElementById('loginBtn');
+
+        // Check for existing session
+        const token = ApiClient.getToken();
+        if (token) {
+            try {
+                const profile = await ApiClient.getProfile();
+                if (profile && profile.role === 'admin') {
+                    window.location.href = 'admin_dashboard.html';
+                    return;
+                }
+            } catch (e) {
+                ApiClient.setToken(null);
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Verifying...';
+                
+                await ApiClient.login(username, password);
+                
+                // Get profile to verify it's an admin
+                const profile = await ApiClient.getProfile();
+                if (profile.role !== 'admin') {
+                    ApiClient.setToken(null); // Clear non-admin token
+                    throw new Error('Access denied. Admin portal requires administrator credentials.');
+                }
+
+                ApiClient.notify('Admin portal access granted', 'success');
+                setTimeout(() => {
+                    window.location.href = 'admin_dashboard.html';
+                }, 800);
+
+            } catch (error) {
+                ApiClient.notify(error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Enter Console';
+            }
+        });
+    });
+</script>
+</body>
+</html>

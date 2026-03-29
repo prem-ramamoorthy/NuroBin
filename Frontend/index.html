@@ -151,6 +151,13 @@
 </head>
 <body>
 
+<!-- Theme Toggle Button -->
+<button id="themeToggleBtn" style="position: absolute; top: 1rem; right: 1rem; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); backdrop-filter: blur(8px); z-index: 1000; box-shadow: var(--shadow-sm);">
+    <svg id="themeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 20px; height: 20px;">
+        <!-- Icon set in JS -->
+    </svg>
+</button>
+
 <div class="login-wrapper">
     <div class="glass-panel login-card fade-in">
         <div class="brand-header">
@@ -161,7 +168,7 @@
         <div class="tabs">
             <div class="tab active" data-role="family">Family / Caregiver</div>
             <div class="tab" data-role="doctor">Clinical</div>
-            <div class="tab" data-role="patient">Patient Demo</div>
+            <!-- <div class="tab" data-role="patient">Patient Demo</div> temporarily disabled -->
         </div>
 
         <form id="loginForm">
@@ -205,6 +212,16 @@
             </div>
         </form>
 
+        <!-- Admin Portal temporarily disabled -->
+        <!-- <div class="mt-8 pt-4 border-t text-center" style="border-color: rgba(0,0,0,0.05);">
+            <a href="admin_login.html" class="text-muted" style="text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: var(--transition);">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 16px; height: 16px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Administration Portal
+            </a>
+        </div> -->
+
         <div class="feature-bullets">
             <div class="feature-item">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -228,6 +245,7 @@
     </div>
 </div>
 
+<script src="theme.js"></script>
 <script src="api.js"></script>
 <script src="login.js"></script>
 </body>
